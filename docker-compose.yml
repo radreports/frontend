@@ -1,0 +1,7 @@
+version: "3"
+services:
+  pacs-ui:
+    image: anilyerramasu/radtel-pacs-ui
+    ports:
+      - 3333:80
+  

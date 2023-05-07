@@ -1,0 +1,70 @@
+{
+    "name": "sakai-react",
+    "version": "7.0.3-SNAPSHOT",
+    "homepage": ".",
+    "private": false,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/primefaces/sakai-react.git"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@flamy-dev/cornerstone-web-image-loader": "^2.1.1",
+        "@fortawesome/fontawesome-svg-core": "^1.2.29",
+        "@fortawesome/free-solid-svg-icons": "^5.13.1",
+        "@fortawesome/react-fontawesome": "^0.1.11",
+        "@fullcalendar/core": "^5.7.2",
+        "@fullcalendar/daygrid": "^5.7.2",
+        "@fullcalendar/interaction": "^5.7.2",
+        "@fullcalendar/react": "^5.7.0",
+        "@fullcalendar/timegrid": "^5.7.2",
+        "@toast-ui/react-image-editor": "^3.15.2",
+        "axios": "^0.19.0",
+        "chart.js": "3.3.2",
+        "classnames": "^2.2.6",
+        "cornerstone-core": "^2.3.0",
+        "cornerstone-math": "^0.1.8",
+        "cornerstone-tools": "^4.17.0",
+        "cornerstone-wado-image-loader": "^3.1.2",
+        "dicom-parser": "1.8.5",
+        "fhirclient": "^2.5.2",
+        "hammerjs": "2.0.8",
+        "keycloak-js": "16.1.1",
+        "pdfjs-dist": "^3.1.81",
+        "primeflex": "3.1.0",
+        "primeicons": "^5.0.0",
+        "primereact": "7.2.0",
+        "prismjs": "1.9.0",
+        "react": "^17.0.1",
+        "react-app-polyfill": "^1.0.6",
+        "react-bootstrap": "^2.6.0",
+        "react-dom": "^17.0.1",
+        "react-dropzone": "^11.0.1",
+        "react-multistep": "^5.5.8",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "3.4.1",
+        "react-step-wizard": "^5.3.11",
+        "react-stepzilla": "^7.0.0",
+        "react-toastify": "^9.0.3",
+        "react-transition-group": "^4.4.1",
+        "sass": "^1.32.8",
+        "tailwindcss": "^1.4.6"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app"
+        ]
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ]
+}

@@ -1,0 +1,8 @@
+{
+  "realm": "telradai",
+  "auth-server-url": "http://auth.deepmd.io/auth/",
+  "ssl-required": "external",
+  "resource": "pacs-ui",
+  "public-client": true,
+  "confidential-port": 0
+}
