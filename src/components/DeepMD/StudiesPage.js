@@ -352,7 +352,7 @@ const StudiesPage = () => {
         <div className="grid crud-demo">
             <div className="col-12">
                 <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate} ></Toolbar>
+                {/* <Toolbar className="mb-4" left={leftToolbarTemplate} ></Toolbar> */}
     <DataTable ref={dt} value={studies} selection={selectedStudies} onSelectionChange={(e) => setSelectedStudies(e.value)}
         dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]} className="datatable-responsive"
                        

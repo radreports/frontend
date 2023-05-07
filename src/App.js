@@ -251,7 +251,7 @@ const App = () => {
 
             <div className="layout-main-container">
                 <div className="layout-main">
-                    <Route path="/" exact render={() => <StudiesPage colorMode={layoutColorMode} location={location} />} />
+                    <Route path="/" exact render={() => <DiagnosticReportPage colorMode={layoutColorMode} location={location} />} />
                     <Route path="/formlayout" component={FormLayoutDemo} />
                     <Route path="/input" component={InputDemo} />
                     <Route path="/floatlabel" component={FloatLabelDemo} />
@@ -275,7 +275,7 @@ const App = () => {
                     <Route path="/crud" component={Crud} />
                     <Route path="/studies" component={StudiesPage} />
                     <Route path="/servicerequest" component={NewServiceOrder} />
-                    
+                    <Route path="/reports" component={DiagnosticReportPage} />
                     <Route path="/study" component={ServiceOrder} />
                     
                     {/* CreateDicom */}
