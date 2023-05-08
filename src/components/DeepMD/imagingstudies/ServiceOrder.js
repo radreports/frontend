@@ -74,7 +74,7 @@ const ServiceOrder = (props) => {
             const serviceID = window.serviceID;
     
             console.log("Service ID::",serviceID);
-            props.signalIfValid(true);
+            // props.signalIfValid(true);
         })
 
     }
@@ -210,7 +210,7 @@ const ServiceOrder = (props) => {
                             <InputTextarea id="reason" rows="4" onChange={(evt) => { console.log("from reason",evt.target.value);SetReason(evt.target.value); }} />
                         </div>
                         <div>
-                        <Button label="Save" icon="pi pi-plus" className="p-button-success mr-2" onClick={createOder} disabled={true}/>
+                        <Button label="Save" icon="pi pi-plus" className="p-button-success mr-2" onClick={createOder} disabled={true} />
                         </div>
                         {/* <div className="field col-12 md:col-3">
                             <label htmlFor="state">Urgency</label>

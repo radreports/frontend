@@ -192,11 +192,13 @@ const DiagnosticReportPage = () => {
     const BodypartTemplate = (rowData) =>{
          
          try {
-            BodyPartExamined = rowData.resource.series[0].bodySite.display;
+            console.log("Bodypart examined ::",rowData.resource.result[0].bodySite);
+            const result = rowData.resource.result[0].bodySite.text;
+            // BodyPartExamined = rowData.resource.series[0].bodySite.display;
          return (
             <>
                 <span className="p-column-title">BodyPartExamined</span>
-                {BodyPartExamined}
+                {result}
            </>
            )
          }
@@ -304,7 +306,7 @@ const DiagnosticReportPage = () => {
         <Column selectionMode="multiple" headerStyle={{ width: '3rem'}}></Column>
         <Column field="patient" header="Patient" sortable body={patientTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="result" header="Result" sortable body={resultTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
-        <Column field="bodypart" header="Bodypart Examined" sortable body={resultTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
+        <Column field="bodypart" header="Bodypart Examined" sortable body={BodypartTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="modality" header="Modality" sortable body={modalityTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         
         <Column field="status" header="Status" sortable body={studyStatusTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
