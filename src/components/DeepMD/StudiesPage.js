@@ -257,11 +257,41 @@ const StudiesPage = () => {
    const referrerTemplate = (rowData) =>{
         
         try {
-            referrer = rowData.resource.referrer.reference;
+            referrer = rowData.resource.referrer;
+            console.log("Practitioner ::",referrer)
+            const name = "Dr. "+ referrer.name[0].given + " " + referrer.name[0].family;
+            const telco = referrer.telecom;
+            var telco_display = "";
+            for (var i=0; i<telco.length;i++){
+                var use = telco[i].use;
+                var value = "";
+                try{
+                    value = telco[i].value;
+                    }
+                catch(e){}
+                if(value !== undefined){
+                    console.log("its not undefined??",value);
+                    const temp = use + ": " + value;
+                telco_display = telco_display + temp;
+                    break;
+
+                }
+                
+            }
         return (
            <>
                {/* <span className="p-column-title">BodyPartExamined</span> */}
-               {referrer}
+              
+               <span className="p-column-title">Name</span>
+               {name}
+                   {/* <br></br> <span className="p-column-title">Patient ID</span> */}
+                   {/* ID:  {rowData.resource.subject.id} */}
+                    <br></br><span className="p-column-title">Patient Sex</span>
+                    {/* Phone: {telco} */}
+                    {telco_display}
+                    <br></br><span className="p-column-title">Patient DOB</span>
+                    
+                    {/* DOB: {rowData.resource.subject.birthDate} */}
           </>
           )
         }
