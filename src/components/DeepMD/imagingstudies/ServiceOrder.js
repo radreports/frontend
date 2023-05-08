@@ -6,15 +6,17 @@ import { Dropdown } from 'primereact/dropdown';
 import config from "../config";
 import FHIR from "fhirclient"
 import axios from "axios";
-const ServiceOrder = () => {
+const ServiceOrder = (props) => {
+    props.signalIfValid(false);
     // console.log("Service ID called::",window.serviceID);
     const [bodypartItem, setBodypartItem] = useState(null);
     const [patientItem, setPatientItem] = useState(null);
     const [practitionerItem, setPractitionerItem] = useState(null);
     const [reason, SetReason] = useState("");
-    const [patientItems, SetPatientItems] = useState(null)
-    const [practitionerItems, SetPractitionerItems] = useState(null)
-    const [bodypartItems, SetBodypartItems] = useState(null)
+    const [patientItems, SetPatientItems] = useState(null);
+    const [practitionerItems, SetPractitionerItems] = useState(null);
+    const [bodypartItems, SetBodypartItems] = useState(null);
+    
     const bodypart_Items = [
         { name: 'Intracranial Haemmorage', code: '27410004' },
         { name: 'Ischemic Stroke', code: '230690007' },
@@ -67,11 +69,12 @@ const ServiceOrder = () => {
         )
         .then(res => {
             console.log(res.data.id);
-            // props.signalIfValid(true);
+            props.signalIfValid(true);
             window.serviceID = res.data.id;
             const serviceID = window.serviceID;
     
             console.log("Service ID::",serviceID);
+            props.signalIfValid(true);
         })
 
     }
@@ -207,7 +210,7 @@ const ServiceOrder = () => {
                             <InputTextarea id="reason" rows="4" onChange={(evt) => { console.log("from reason",evt.target.value);SetReason(evt.target.value); }} />
                         </div>
                         <div>
-                        <Button label="Save" icon="pi pi-plus" className="p-button-success mr-2" onClick={createOder} />
+                        <Button label="Save" icon="pi pi-plus" className="p-button-success mr-2" onClick={createOder} disabled={true}/>
                         </div>
                         {/* <div className="field col-12 md:col-3">
                             <label htmlFor="state">Urgency</label>
