@@ -69,7 +69,7 @@ const StudiesPage = () => {
     const getPath = client.getPath;
     client.request(`/ImagingStudy`, {
         // resolveReferences: "patientReference"
-        resolveReferences: [ "practitioner","subject","basedon"]
+        resolveReferences: [ "referrer","subject","basedon"]
     })
     .then(data => {
         // console.log(data);

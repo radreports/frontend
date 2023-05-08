@@ -55,7 +55,7 @@ import ServiceOrder from './components/DeepMD/imagingstudies/ServiceOrder';
 import CreateDicom from "./components/CreateDicom/CreateDicom"
 import HandlingImage from "./components/CornerStone/pages/HandlingImage"
 const App = () => {
-    const [layoutMode, setLayoutMode] = useState('static');
+    const [layoutMode, setLayoutMode] = useState('overlay');
     const [layoutColorMode, setLayoutColorMode] = useState('dark')
     const [inputStyle, setInputStyle] = useState('outlined');
     const [ripple, setRipple] = useState(true);

@@ -13,7 +13,7 @@ export const AppConfig = (props) => {
     const [theme, setTheme] = useState('mdc-dark-indigo');
     const config = useRef(null);
     let outsideClickListener = useRef(null);
-
+    // props.layoutMode = 'overlay'
     const unbindOutsideClickListener = useCallback(() => {
         if (outsideClickListener.current) {
             document.removeEventListener('click', outsideClickListener.current);
