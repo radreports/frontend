@@ -54,7 +54,7 @@ const DiagnosticReportPage = () => {
     const getPath = client.getPath;
     var my_resource = [] ;
     client.request(`/DiagnosticReport`, {
-        resolveReferences: [ "subject","study","result"]
+        resolveReferences: [ "subject","result","study"]
     })
     .then(data => {
         console.log("From diagnostic report",data);
@@ -139,7 +139,7 @@ const DiagnosticReportPage = () => {
             // console.log("patient data ::",rowData);
             const subject = rowData.resource.subject;
             const b_date = subject.birthDate;
-            console.log("patient data ::",subject);
+            // console.log("patient data ::",subject);
             var name = subject.name;
             var fName = name[0].given[0];
             var givenName = name[0].family;
@@ -170,7 +170,7 @@ const DiagnosticReportPage = () => {
     const resultTemplate = (rowData) =>{
         try {
             
-            console.log("result data ::",rowData.resource);
+            // console.log("result data ::",rowData.resource);
             
             return (
         
@@ -192,7 +192,7 @@ const DiagnosticReportPage = () => {
     const BodypartTemplate = (rowData) =>{
          
          try {
-            console.log("Bodypart examined ::",rowData.resource.result[0].bodySite);
+            // console.log("Bodypart examined ::",rowData.resource.result[0].bodySite);
             const result = rowData.resource.result[0].bodySite.text;
             // BodyPartExamined = rowData.resource.series[0].bodySite.display;
          return (
@@ -267,12 +267,13 @@ const DiagnosticReportPage = () => {
     }
     
     const viewerTemplate = (rowData) =>{
+       const study_instance_uid =  rowData.resource.conclusionCode[0].coding[0].code;
         // const viewerURL = "https://demo.deepmd.io/viewer-ohif/viewer/" +{rowData.MainDicomTags.StudyInstanceUID};
         return (
             <>
              <div>
 
-            <Button label="  .View "  className="p-button-raised p-button-info" onClick={() =>openViewer(rowData.study_instance_uid)} />
+            <Button label="  .View "  className="p-button-raised p-button-info" onClick={() =>openViewer(study_instance_uid)} />
             </div>
             
             </>
@@ -308,6 +309,7 @@ const DiagnosticReportPage = () => {
         <Column field="result" header="Result" sortable body={resultTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="bodypart" header="Bodypart Examined" sortable body={BodypartTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="modality" header="Modality" sortable body={modalityTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
+        <Column field="view" header="Image"  body={viewerTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         
         <Column field="status" header="Status" sortable body={studyStatusTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
            

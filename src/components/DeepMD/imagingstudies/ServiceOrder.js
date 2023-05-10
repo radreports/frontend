@@ -78,33 +78,6 @@ const ServiceOrder = (props) => {
         })
 
     }
-    // var bodypartItems = [
-    //     { name: 'Intracranial Haemmorage', code: 'Option 1' },
-    //     { name: 'Ischemic Stroke', code: 'Option 2' },
-    //     { name: 'Cerebral Anauresm', code: 'Option 3' },
-    //     { name: 'MSK', code: 'Option 4' },
-    //     { name: 'Covid CT', code: 'Option 5' },
-    //     { name: 'MSK', code: 'Option 6' },
-    //     { name: 'Mammogram', code: 'Option 7' },
-    //     { name: 'Breast MRI', code: 'Option 8' },
-    //     { name: 'Brain Tumor', code: 'Option 9' },
-    //     { name: 'Colon', code: 'Option 10' },
-    //     { name: 'Head and Neck Cancer', code: 'Option 11' },
-    //     { name: 'HnC OAR', code: 'Option 12' },
-    //     { name: 'Lung Nodules', code: 'Option 13' },
-    //     { name: 'Liver Tumor', code: 'Option 14' },
-    //     { name: 'Pancreas', code: 'Option 15' },
-    //     { name: 'Prostate', code: 'Option 16' },
-    //     { name: 'Lung Nodules', code: 'Option 17' },
-    //     { name: 'Liver Tumor', code: 'Option 18' },
-    //     { name: 'OAR Thoractic', code: 'Option 19' },
-    // ];
-    // var patientItems = [
-       
-    // ];
-    // var practitionerItems = [
-        
-    // ];
     
     const EHR_URL = config.EHR_URL;
     const client = new FHIR.client(EHR_URL);
