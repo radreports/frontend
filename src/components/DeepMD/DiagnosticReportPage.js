@@ -17,25 +17,33 @@ import axios from 'axios';
 import config from "./config";
 import FHIR from "fhirclient"
 import { OverlayPanel } from 'primereact/overlaypanel';
+import { Link } from "react-router-dom";
 const DiagnosticReportPage = () => {
     // let user = JSON.parse(sessionStorage.getItem('authentication'));
     let token = sessionStorage.getItem('authentication');
     console.log(sessionStorage);
     // console.log("User toke::----->" + token)
     // const basicDialogFooter = <Button type="button" label="Dismiss" onClick={() => setDisplayBasic(false)} icon="pi pi-check" className="p-button-secondary" />;
-    
+    let emptyDiagnosticReport = {
+        id: null,
+        patient: null,
+        result: null,
+        bodypart: null,
+        modality: null,
+        view: null,
+        status: ""
+    };
     
     
     const apiURL = config.API_URL +"/studies";
-    const niftiURL = config.API_URL +"/nifti?id=";
-    const predictURL = config.API_URL +"/predict?id=";
     const vieweerURL = config.VIEWER_URL;
-    const downloadURL = config.API_URL +"/dicom?id=";
-    // const [displayBasic, setDisplayBasic] = useState(false);
-    const [visibleFullScreen, setVisibleFullScreen] = useState(false);
     
+    const [diagnosticReports, setDiagnosticReports] = useState(null);
+    const [selectedReports, setSelectedReports] = useState(null);
+
+    // const [diagnosticReport, setDiagnosticReport] = useState(null);
+    // const [selectedDiagnosticReport, setSelectedDiagnosticReport] = useState(null);
     
-    const [diagnosticReport, setDiagnosticReport] = useState(null);
     const [studies, setStudies] = useState(null);
     const [seriesID, setSeries] = useState(null);
     const [selectedStudies, setSelectedStudies] = useState(null);
@@ -45,6 +53,18 @@ const DiagnosticReportPage = () => {
     const toast = useRef(null);
     const dt = useRef(null);
 
+    const getSelection = (e) => {
+        let val = e;
+        console.log("Selection is ::");
+        console.log(e);
+        // console.log("resource is ::",e.resource.id);
+        // const id = e.resource.id;
+        setSelectedReports(val);
+        console.log("SelectedDiagnosticReports::",selectedReports)
+        
+        
+        
+    }
 ////
 
     useEffect(() => {
@@ -60,7 +80,7 @@ const DiagnosticReportPage = () => {
         console.log("From diagnostic report",data);
         try{
             const results = data.entry;
-            setDiagnosticReport(results);
+            setDiagnosticReports(results);
         }
         catch(e){}
     })
@@ -134,6 +154,29 @@ const DiagnosticReportPage = () => {
             </>
         )
     }
+    const idTemplate = (rowData) =>{
+        try {
+            // console.log("patient data ::",rowData);
+            const id = rowData.resource.id;
+
+            return (
+            
+                <>
+                {/* createId(); */}
+                 <span className="p-column-title">Name</span>
+                 {id}
+                 {/* <Link to="/drdetails">{id}</Link> */}
+                   
+                   
+                </>
+                
+            )
+          }
+          catch(err) {
+            
+          }
+        
+    }
     const patientTemplate = (rowData) =>{
         try {
             // console.log("patient data ::",rowData);
@@ -170,14 +213,29 @@ const DiagnosticReportPage = () => {
     const resultTemplate = (rowData) =>{
         try {
             
-            // console.log("result data ::",rowData.resource);
+            const result = rowData.resource.conclusion;
+            // pi-thumbs-up
+            // pi-exclamation-triangle
+            if (result.toLowerCase().includes("negative")){
             
+                return (
+                    <>
+                    {/* createId(); */}
+                    <span className="p-column-title">Name</span>
+                    <i class="pi pi-check" ></i>
+                    {/* <i class="pi pi-check" style="font-size: 2rem"></i> */}
+                    {"  " +rowData.resource.conclusion}
+                    
+                    </>
+                    
+                )
+            }
             return (
-        
                 <>
                 {/* createId(); */}
                  <span className="p-column-title">Name</span>
-                   {rowData.resource.conclusion}
+                 <i class="pi pi-exclamation-triangle"></i>
+                   {"  " +rowData.resource.conclusion}
                   
                 </>
                 
@@ -297,32 +355,22 @@ const DiagnosticReportPage = () => {
             <div className="col-12">
                 <div className="card">
                 {/* <Toolbar className="mb-4" left={leftToolbarTemplate} ></Toolbar> */}
-    <DataTable ref={dt} value={diagnosticReport} selection={selectedStudies} onSelectionChange={(e) => setSelectedStudies(e.value)}
+    <DataTable ref={dt} value={diagnosticReports} selection={selectedReports} onSelectionChange={(e) =>getSelection(e.value)}
         dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]} className="datatable-responsive"
                        
         // Above two are added
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} studies"
-        globalFilter={globalFilter} emptyMessage="No Studies found." header={header} responsiveLayout="scroll">
-        <Column selectionMode="multiple" headerStyle={{ width: '3rem'}}></Column>
+        globalFilter={globalFilter} emptyMessage="No Reports found." header={header} responsiveLayout="scroll">
+        {/* <Column selectionMode="single" headerStyle={{ width: '3rem'}}></Column> */}
+        <Column field="id" header="ID" sortable body={idTemplate} headerStyle={{ width: '5%', minWidth: '10rem' }}></Column>
         <Column field="patient" header="Patient" sortable body={patientTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="result" header="Result" sortable body={resultTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="bodypart" header="Bodypart Examined" sortable body={BodypartTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="modality" header="Modality" sortable body={modalityTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="view" header="Image"  body={viewerTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
-        
         <Column field="status" header="Status" sortable body={studyStatusTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
-           
-        {/* <Column field="AccessionNumber" header="AccessionNumber" sortable body={AccessionNumberTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>                          */}
-        {/* <Column field="Status" header="Study Status" sortable body={InferStatusTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column> */}
-        {/* <Column field="Findings" header="Findings" sortable body={InferResultTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column> */}
-                        
-        {/* <Column field="reference" header="Reference" sortable body={modalityTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column> */}
-           
-        {/* <Column field="view" header="Viewer"  body={viewerTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column> */}
-                        
-        
-</DataTable>
+    </DataTable>
 
                   
                 </div>

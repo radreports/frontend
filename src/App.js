@@ -2,12 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { Route, useLocation } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
-
+import { initializeApp } from 'firebase/app';
 import { AppTopbar } from './AppTopbar';
 import { AppFooter } from './AppFooter';
 import { AppMenu } from './AppMenu';
 import { AppConfig } from './AppConfig';
-
+import config from "./components/DeepMD/config";
+import axios from 'axios';
 import Dashboard from './components/Dashboard';
 import ButtonDemo from './components/ButtonDemo';
 import ChartDemo from './components/ChartDemo';
@@ -50,11 +51,26 @@ import UploadDICOM from "./components/DeepMD/UploadDICOM";
 import DiagnosticReportPage from "./components/DeepMD/DiagnosticReportPage";
 import NewServiceOrder from "./components/DeepMD/imagingstudies/NewServiceOrder"
 import ServiceOrder from './components/DeepMD/imagingstudies/ServiceOrder';
-
+import DiagnosticReportDetails from "./components/DeepMD/DiagnosticReportDetails";
 // import Cxr from "./components/DeepMD/Cxr";
 import CreateDicom from "./components/CreateDicom/CreateDicom"
-import HandlingImage from "./components/CornerStone/pages/HandlingImage"
+import HandlingImage from "./components/CornerStone/pages/HandlingImage";
+
+import { StyledFirebaseAuth } from "react-firebaseui";
+// import "./styles.css";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import { Image } from 'primereact/image';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import "firebase/messaging";
+import { getMessaging, getToken,onMessage } from "firebase/messaging";
+import { Toast } from 'primereact/toast';
+// import {toast} from "react-toastify";
 const App = () => {
+
+    let url = config.API_URL + "/Token" ;
+    const myToast = useRef(null);
     const [layoutMode, setLayoutMode] = useState('overlay');
     const [layoutColorMode, setLayoutColorMode] = useState('dark')
     const [inputStyle, setInputStyle] = useState('outlined');
@@ -65,12 +81,116 @@ const App = () => {
     const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
     const copyTooltipRef = useRef();
     const location = useLocation();
-
+    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [myToken,setMyToken] = useState(false);
     PrimeReact.ripple = true;
-
+    const showToast = (severityValue, summaryValue, detailValue) => {   
+        myToast.current.show({severity: severityValue, summary: summaryValue, detail: detailValue,life:6000});   
+      }
     let menuClick = false;
     let mobileTopbarMenuClick = false;
+    // const messaging = firebase.messaging();
+    const firebaseConfig = {
+        apiKey: 'AIzaSyBqwzPmF0MqcvGXj-6Z0jTjbuxk2uqF9Sk',
+        appId: '1:489104179920:web:a7251cb801d03a9601d4d5',
+        messagingSenderId: '489104179920',
+        projectId: 'radreports-b6f17',
+        authDomain: 'radreports-b6f17.firebaseapp.com',
+        storageBucket: 'radreports-b6f17.appspot.com',
+        measurementId: 'G-E2XQ8YR5YY',
+      };
+      
+    const app = firebase.initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+    onMessage(messaging, (payload) => {
+        console.log('Message received. from app.js ', payload.notification);
+        // Toast.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+        // Toast.show({severity: 'info', summary: 'Success', detail: 'File Uploaded with Auto Mode'});
+    
+        let msg = payload.notification.body;
+        let title = payload.notification.title;   
+        showToast('success',title,msg);
+        // alert(title,msg);
+      });
+const tokenfrom =() =>{
+    getToken(messaging, { vapidKey: 'BCYX-E3xunnPIFyWHS32nkQGZSsarku0vZww7ykS2dk6x79D10-Q76dClnoU5sD6wcvARn4UvRAUO5O1OfcxA7A' }).then((currentToken) => {
+        if (currentToken) {
+          console.log("currentToken from app.js ::",currentToken);
+          setMyToken(currentToken);
+          window.fcm_token = currentToken;
+        //   return currentToken;
+          // Send the token to your server and update the UI if necessary
+          // ...
+        } else {
+          // Show permission request UI
+          console.log('No registration token available. Request permission to generate one.');
+          // ...
+        }
+      }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+        // ...
+      });
+};
 
+    const uiConfig = {
+        signInFlow: "popup",
+        signInSuccessUrl: "/",
+        signInOptions: [
+            // firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+            firebase.auth.GithubAuthProvider.PROVIDER_ID,
+            // firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+            
+        ]
+      };
+      useEffect(() => {
+        let tokn = tokenfrom();
+        setMyToken(tokn);
+
+    }, []);
+      useEffect(() => {
+        console.log("firebase.apps.length::",firebase.apps.length);
+        if (firebase.apps.length) {
+            
+          const unregisterAuthObserver = firebase
+            .auth()
+            .onAuthStateChanged((user) => {
+                window.firebase = firebase;
+                // let myToken = tokenfrom();
+                try{
+                console.log("My token -->",window.fcm_token);
+                console.log("user::",user);
+                console.log("user email ::",user.email);
+                const email = user.email;
+                let send_token = 
+                    {
+                        "token": window.fcm_token
+                    };
+                 
+                   
+                console.log("Posting to url",url);
+                console.log("data sent is ::",send_token);
+                axios({
+                    method: "POST",
+                    url: url,
+                    data: send_token,
+                    headers: {
+                      "Content-Type": "application/json"
+                    }
+            }).then(res => {
+                console.log(res);
+            })
+        }
+        catch(r){}
+            setIsSignedIn(!!user);
+            });
+          return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
+        }
+      }, []);
+      
     useEffect(() => {
         if (mobileMenuActive) {
             addClass(document.body, "body-overflow-hidden");
@@ -151,7 +271,8 @@ const App = () => {
     const onMobileSubTopbarMenuClick = (event) => {
         mobileTopbarMenuClick = true;
         console.log("onMobileSubTopbarMenuClick ...");
-        window.keycloak.logout();
+        // window.keycloak.logout();
+        firebase.auth().signOut();
 
         event.preventDefault();
     }
@@ -178,8 +299,10 @@ const App = () => {
             label: 'Radiology', icon: 'pi pi-fw pi-clone',
             items: [
                 {label: 'Diagnostic Reports', icon: 'pi pi-fw pi-id-card', to: '/diagnosticreport' },
+                // {label: 'Diagnostic Details', icon: 'pi pi-fw pi-id-card', to: '/drdetails' },
                 {label: 'New ServiceRequest', icon: 'pi pi-fw pi-id-card', to: '/servicerequest' },
-                {label: 'Imaging Studies', icon: 'pi pi-fw pi-id-card', to: '/studies' },
+                // {label: 'Imaging Studies', icon: 'pi pi-fw pi-id-card', to: '/studies' },
+                // {label: 'Icons', icon: 'pi pi-fw pi-id-card', to: '/icons' },
                 
                 // {label: 'New Study', icon: 'pi pi-fw pi-id-card', to: '/study' },
                 
@@ -237,9 +360,53 @@ const App = () => {
         'p-ripple-disabled': ripple === false,
         'layout-theme-light': layoutColorMode === 'light'
     });
-
+    if (!isSignedIn) {
+        return (
+            <>
+            
+           <div className="card p-fluid" >
+           
+            
+                {/* <p></p> */}
+             {/* <Image src="https://radreports.ai/assets/img/rediology.png" width="350" alt="Image Text"  /> */}
+            {/* <h1 style={{ color: "red"}}>Demo App</h1> */}
+            {/* <h3 style={{ color: "red"}}> RadReports Demo App</h3> */}
+            {/* <h6 style={{ color: "ButtonHighlight"}}> Sign in to view the demo</h6> */}
+            <Card className="card p-fluid">
+      {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
+      <Card.Body>
+        <Card.Title>Card Title</Card.Title>
+        <Card.Text>
+        {/* <h5 style={{ color: "white"}}> RadReports Demo App</h5> */}
+        RadReports Demo App
+        </Card.Text>
+        {/* <h3 style={{ color: "red"}}> RadReports Demo App</h3> */}
+        {!!firebase.apps.length && (
+              <StyledFirebaseAuth
+                uiConfig={uiConfig}
+                firebaseAuth={firebase.auth()}
+              />
+            )}
+      </Card.Body>
+    </Card>
+            {/* <label htmlFor="reason">RadReports Demo App</label> */}
+{/*             
+            <div className="card"> 
+            
+            {!!firebase.apps.length && (
+              <StyledFirebaseAuth
+                uiConfig={uiConfig}
+                firebaseAuth={firebase.auth()}
+              />
+            )}
+            </div> */}
+           </div>
+        </>
+        );
+      }
     return (
         <div className={wrapperClass} onClick={onWrapperClick}>
+            <Toast ref={myToast} />
             <Tooltip ref={copyTooltipRef} target=".block-action-copy" position="bottom" content="Copied to clipboard" event="focus" />
 
             <AppTopbar onToggleMenuClick={onToggleMenuClick} layoutColorMode={layoutColorMode}
@@ -278,6 +445,7 @@ const App = () => {
                     <Route path="/reports" component={DiagnosticReportPage} />
                     <Route path="/study" component={ServiceOrder} />
                     
+                    <Route path="/drdetails" component={DiagnosticReportDetails} />
                     {/* CreateDicom */}
                     <Route path="/diagnosticreport" component={DiagnosticReportPage} />
                     

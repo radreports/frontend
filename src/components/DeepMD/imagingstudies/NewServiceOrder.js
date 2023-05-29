@@ -10,7 +10,7 @@ import { Button } from 'primereact/button';
 import "./css/app.css"
 import "./css/normilize.css"
 import StepZilla from "react-stepzilla";
-import "./css/skeleton.css"
+import "./css/skeleton.css";
 
 const NewServiceOrder = () => {
    
