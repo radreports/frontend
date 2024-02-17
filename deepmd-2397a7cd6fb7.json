@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "deepmd",
+  "private_key_id": "a66073bb3613682bb7a02a328a25eb9505a8a6c7",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQD5fNMSkrHCf0RE\niDEecZlpZ2FZN05Qg8DyRgVi/I/lSJz6H54Kot00eiNSMMAf4Gu7nvNDTvEVG2Dw\nTeh00PqjEi5bKyMyTgEafcbOq60JuRepfVeq+Clw5b3izQLwxE7IawgBYpIwHPwZ\n/j3U31qshg0hBe6yvNeIqv/I9khvlheubJkl7nq074seoCUX8T2C6XyToAGpsqg3\nB3mYd/Aeikk+NsZrbMgO7b3OPOkHXSvmf50Tw+T96gNoceEV7sKy6rZyW/GyNtOH\nfNX3LDgogo3YjVafuw9joIPW2aM47LZD7V+3fucjbSdNSJqHL1M2Ilyu0f/7tleF\n53BeOt9tAgMBAAECggEAGD/bvDhp8r+wAQFD1POxt58GxUcs44KK5IGN0Hs/+Uc/\nisg78ki2O32LpVd7tR15Gzlt56Lqp+SLXZAVAhW15tfDjbT5rNAMJ2kGQ9xH62QE\nOsMmHEYWsRSDimHm4UQTbEOK+ad9EhQfJN+jXud+xroY2JbdBp54TJ5iUkQt8jpx\nXdFFvR1s1eYiSphmWNsBTpKDoBCQrbafK6O2QoEurzRHFLTxn9qrxdu8HF3CYlx3\niKi9yX9Wtv5pSNmv5ED0ynalCRqteMoEQf59CAEbONa2XNxsVyqG1gcNyPLmWe8C\niImAoUed7wLcjfczAl81EuzOs9P8TVD5YGyl19XzeQKBgQD9rN+NprIHP/bFeNtH\novIqpjjmlypTK71pSv2pkdBcU0Bwvi92zSy1Nsf3oCX4Nsfv8tEb5Uy/CgGlvObd\nWDN1ephK9B6wAgixCpQvEN5/knUmpdRTwSftowmKopSntUwETpPlVhegCx/kDKQ4\nGTlPnXsdWgtraii52Wxm/hHU6wKBgQD7xiB5Rq87I9UoUiY+a9wF26bux3vXO1qQ\nvC2+vH1AWPQ7pT30Mp0qNnMEd8ziLm3F/nDrBzJBv/Bkc4/OseHXK3v+rE6Dsu7/\nM7xnTUK9kluPuaTJ0YTTHx4DkpqxNmlL+n4AqJt5Th9N/WBtTDGtBnPmz5BSIAKJ\nSD/y7lrnBwKBgDcoYauBNXCSHewuLS/UZGeVoQWylMdk2ViNr74xMGcCyx44nEVu\ns2vrr2tObTMdZjfsSj+QijF30YfiHSi/xuCieX7CufF3X8BvFm1tc5O1mrd+kz5q\n322yZ563Xy9gIllFZK8XGyf3g0Wo4gQ4p9eB3IUzUQxYFubiOcnjMKllAoGBAPMd\nXrAcrApMUIENyjYOSrgxYKFDaPbtLkeCHh4Gvl9LRhLuPcO2uAJR74BJ+kIRmRhN\n2FVqboIEyCkHWb66D5yJNcM2ON59AsDVAUEy3pZVZCqFlXT35u1CJ+ZFQzCJnOWr\n7M3QAckBwcK6PslrgLBWAcbHeNGEbU6IwI9gz9AzAoGAMCOfTTKnX/l6OeYPaIxC\nAMfWHNh7+5R4VfT6Qpyez47BxVGlEHf3HMyiF2zxoyLAGjVVn6WZSxzmDAQcn1+8\niW+MsEEcA4pACUkaSd1pZMJn2nHYOJVevBZ7cLF9EiTS4G3TOkwIUu1FlId/rtbI\nDZ/kWDOUCRYIqp66/DzkFHI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "deepmd-fhir-serviceaccount@deepmd.iam.gserviceaccount.com",
+  "client_id": "117627446716050283792",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/deepmd-fhir-serviceaccount%40deepmd.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
