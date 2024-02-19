@@ -375,10 +375,10 @@ const tokenfrom =() =>{
             <Card className="card p-fluid">
       {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
       <Card.Body>
-        <Card.Title>Card Title</Card.Title>
-        <Card.Text>
-        {/* <h5 style={{ color: "white"}}> RadReports Demo App</h5> */}
-        RadReports Demo App
+      <Card.Title className="text-center" style={{ color: "white" , fontSize: "80px"}}>RadAssist</Card.Title>
+        <Card.Text className="text-center" style={{ color: "white", fontSize: "50px" }}>
+       
+        RadAssist Demo App
         </Card.Text>
         {/* <h3 style={{ color: "red"}}> RadReports Demo App</h3> */}
         {!!firebase.apps.length && (
