@@ -98,8 +98,8 @@ const DiagnosticReportPage = () => {
         for (var study of selectedStudies) {
             const header = {
                 headers:{
-                    "userID": window.name ,
-                    "Authorization": token
+                    "userID": "window.name" ,
+                    "Authorization": "token"
                  }
               };
             axios.delete(apiURL+"/"+study.study_id,header).then((response) => {

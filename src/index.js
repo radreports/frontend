@@ -35,15 +35,15 @@ const firebaseConfig = {
     measurementId: 'G-E2XQ8YR5YY',
   };
   
-  const app = firebase.initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  console.log("auth ::",auth);
+  // const app = firebase.initializeApp(firebaseConfig);
+  // const auth = getAuth(app);
+  // console.log("auth ::",auth);
 
-  const messaging = getMessaging(app);
-  onMessage(messaging, (payload) => {
-    console.log('Message received. ', payload);
-    // ...
-  });
+  // const messaging = getMessaging(app);
+  // onMessage(messaging, (payload) => {
+  //   console.log('Message received. ', payload);
+  //   // ...
+  // });
 
   // onBackgroundMessage(messaging, (payload) => {
   //   console.log('[firebase-messaging-sw.js] Received background message ', payload);
@@ -59,20 +59,20 @@ const firebaseConfig = {
   // });
   // getToken(messaging, {vapidKey: "BCYX-E3xunnPIFyWHS32nkQGZSsarku0vZww7ykS2dk6x79D10-Q76dClnoU5sD6wcvARn4UvRAUO5O1OfcxA7A"});
 
-  getToken(messaging, { vapidKey: 'BCYX-E3xunnPIFyWHS32nkQGZSsarku0vZww7ykS2dk6x79D10-Q76dClnoU5sD6wcvARn4UvRAUO5O1OfcxA7A' }).then((currentToken) => {
-    if (currentToken) {
-      console.log("currentToken::",currentToken);
-      // Send the token to your server and update the UI if necessary
-      // ...
-    } else {
-      // Show permission request UI
-      console.log('No registration token available. Request permission to generate one.');
-      // ...
-    }
-  }).catch((err) => {
-    console.log('An error occurred while retrieving token. ', err);
-    // ...
-  });
+  // getToken(messaging, { vapidKey: 'BCYX-E3xunnPIFyWHS32nkQGZSsarku0vZww7ykS2dk6x79D10-Q76dClnoU5sD6wcvARn4UvRAUO5O1OfcxA7A' }).then((currentToken) => {
+  //   if (currentToken) {
+  //     console.log("currentToken::",currentToken);
+  //     // Send the token to your server and update the UI if necessary
+  //     // ...
+  //   } else {
+  //     // Show permission request UI
+  //     console.log('No registration token available. Request permission to generate one.');
+  //     // ...
+  //   }
+  // }).catch((err) => {
+  //   console.log('An error occurred while retrieving token. ', err);
+  //   // ...
+  // });
   
   // useEffect(() => {
   //   if (firebase.apps.length) {
