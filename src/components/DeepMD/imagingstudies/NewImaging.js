@@ -33,6 +33,10 @@ const NewImaging = () => {
         //event.files == files to upload
         console.log("files to upload ::",event.files);
         const formData = new FormData();
+        try {
+            serviceID = window.serviceID;
+        }catch(e){}
+        console.log("from newimage upload serviceIS is :",serviceID);
         event.files.forEach(file=>{
             formData.append("files", file);
           });
