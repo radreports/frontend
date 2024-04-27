@@ -42,7 +42,7 @@ const NewImaging = () => {
           });
         axios({
             method: "POST",
-            url: url,
+            url: url+ "/"+serviceID,
             data: formData,
             headers: {
               "Content-Type": "multipart/form-data",
