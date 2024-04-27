@@ -15,7 +15,7 @@ const NewImaging = () => {
         serviceID = window.serviceID;
     }catch(e){}
     
-    console.log("Service ID::",serviceID);
+    console.log("fromnewimage NewImaging() Service ID::",serviceID);
     const url = config.API_URL + "/ImagingStudy/upload";
     console.log("Upload url::",url)
    
