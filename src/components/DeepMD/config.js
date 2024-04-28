@@ -12,7 +12,7 @@ const config = {
     // API_URL: "http://localhost:8081",
     // API_URL: "http://localhost:8888/api/v1",
     // VIEWER_URL:"http://localhost:3001/viewer/"
-    VIEWER_URL: "https://pacs.radassist.ai/viewer/"
+    VIEWER_URL: "https://viewer.radassist.ai/viewer/"
     // VIEWER_URL: "http://vieweer.telradai.com/Viewer/"
     // VIEWER_URL: "https://research.deepmd.io/viewer/"
  
