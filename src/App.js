@@ -47,6 +47,7 @@ import './assets/layout/layout.scss';
 import './App.scss';
 // import "./assets/main.css";
 import StudiesPage from "./components/DeepMD/StudiesPage";
+import Dictation from './components/DeepMD/Speech';
 import UploadDICOM from "./components/DeepMD/UploadDICOM";
 import DiagnosticReportPage from "./components/DeepMD/DiagnosticReportPage";
 import NewServiceOrder from "./components/DeepMD/imagingstudies/NewServiceOrder"
@@ -301,6 +302,7 @@ const App = () => {
                 {label: 'Diagnostic Reports', icon: 'pi pi-fw pi-id-card', to: '/diagnosticreport' },
                 // {label: 'Diagnostic Details', icon: 'pi pi-fw pi-id-card', to: '/drdetails' },
                 {label: 'New ServiceRequest', icon: 'pi pi-fw pi-id-card', to: '/servicerequest' },
+                {label: 'Dictation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
                 // {label: 'Imaging Studies', icon: 'pi pi-fw pi-id-card', to: '/studies' },
                 // {label: 'Icons', icon: 'pi pi-fw pi-id-card', to: '/icons' },
                 
@@ -313,7 +315,7 @@ const App = () => {
                 // {label: 'HandlingImage', icon: 'pi pi-fw pi-id-card', to: '/HandlingImage' },
                 // { label: 'menu', icon: 'pi pi-fw pi-user-edit', to: '/menu' },
                 // { label: 'Crud', icon: 'pi pi-fw pi-user-edit', to: '/crud' },
-                // { label: 'forms', icon: 'pi pi-fw pi-user-edit', to: '/formlayout' },
+                { label: 'forms', icon: 'pi pi-fw pi-user-edit', to: '/formlayout' },
                 // { label: 'Timeline', icon: 'pi pi-fw pi-calendar', to: '/timeline' },
                 // { label: 'Empty', icon: 'pi pi-fw pi-circle-off', to: '/empty' }
             ]
@@ -444,6 +446,7 @@ const App = () => {
                     <Route path="/servicerequest" component={NewServiceOrder} />
                     <Route path="/reports" component={DiagnosticReportPage} />
                     <Route path="/study" component={ServiceOrder} />
+                    <Route path="/dictation" component={Dictation} />
                     
                     <Route path="/drdetails" component={DiagnosticReportDetails} />
                     {/* CreateDicom */}
