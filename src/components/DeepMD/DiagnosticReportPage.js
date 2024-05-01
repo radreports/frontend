@@ -222,7 +222,7 @@ const DiagnosticReportPage = () => {
                     <>
                     {/* createId(); */}
                     <span className="p-column-title">Name</span>
-                    <i class="pi pi-check" ></i>
+                    <i className="pi pi-check" ></i>
                     {/* <i class="pi pi-check" style="font-size: 2rem"></i> */}
                     {"  " +rowData.resource.conclusion}
                     
@@ -234,7 +234,7 @@ const DiagnosticReportPage = () => {
                 <>
                 {/* createId(); */}
                  <span className="p-column-title">Name</span>
-                 <i class="pi pi-exclamation-triangle"></i>
+                 <i className="pi pi-exclamation-triangle"></i>
                    {"  " +rowData.resource.conclusion}
                   
                 </>
@@ -354,7 +354,7 @@ const DiagnosticReportPage = () => {
         <div className="grid crud-demo">
             <div className="col-12">
                 <div className="card">
-                {/* <Toolbar className="mb-4" left={leftToolbarTemplate} ></Toolbar> */}
+                <Toolbar className="mb-4" left={leftToolbarTemplate} ></Toolbar>
     <DataTable ref={dt} value={diagnosticReports} selection={selectedReports} onSelectionChange={(e) =>getSelection(e.value)}
         dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]} className="datatable-responsive"
                        
