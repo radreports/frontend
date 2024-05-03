@@ -74,7 +74,7 @@ const DiagnosticReportPage = () => {
     const getPath = client.getPath;
     var my_resource = [] ;
     client.request(`/DiagnosticReport`, {
-        pageLimit: 0 ,
+        // pageLimit: 0 ,
         resolveReferences: [ "subject","result","study"]
     })
     .then(data => {
