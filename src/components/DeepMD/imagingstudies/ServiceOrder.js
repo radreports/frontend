@@ -19,6 +19,11 @@ const ServiceOrder = (props) => {
     
     const bodypart_Items = [
         { name: 'Intracranial Haemmorage', code: '27410004' },
+        { name: 'Lung Nodules', code: '786838002' },
+        { name: 'Liver Tumor', code: '93870000' },
+        { name: 'OAR All', code: 'totalseg' },
+        { name: 'OAR Abdoman', code: 'Abdoman' },
+        { name: 'OAR Thoractic', code: 'thor' },
         { name: 'Ischemic Stroke', code: '230690007' },
         { name: 'Cerebral Aneurysm', code: '233983001' },
         { name: 'MSK', code: 'Option 4' },
@@ -30,13 +35,12 @@ const ServiceOrder = (props) => {
         { name: 'Colon Cancer', code: '275978004' },
         { name: 'Head and Neck Cancer', code: 'Option 11' },
         { name: 'HnC OAR', code: 'Option 12' },
-        { name: 'Lung Nodules', code: '786838002' },
-        { name: 'Liver Tumor', code: '93870000' },
+        
+        
         { name: 'Pancreas', code: '363418001' },
         { name: 'Prostate', code: '399068003' },
         
-        { name: 'OAR Abdoman', code: 'Abdoman' },
-        { name: 'OAR Thoractic', code: 'thor' },
+        
     ];
    
     const createOder= () => {
