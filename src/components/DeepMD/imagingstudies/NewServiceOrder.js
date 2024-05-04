@@ -39,11 +39,7 @@ return (
       </MultiStep>
      
     </div>
-    // <div className='container'>
-    // <div className='step-progress'>
-    //     <StepZilla steps={steps}/>
-    // </div>
-    // </div>
+    
   )
 }
   const comparisonFn = function (prevProps, nextProps) {

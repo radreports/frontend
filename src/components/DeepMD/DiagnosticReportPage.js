@@ -125,7 +125,7 @@ const DiagnosticReportPage = () => {
                 <div className="my-2">
                 <Button label="New" icon="pi pi-plus" className="p-button-success mr-2" onClick={(e) => op.current.toggle(e)} />
 
-                    <OverlayPanel style={{ width: '85%' , height: '80%', marginTop: '150px'  }} ref={op} showCloseIcon dismissable>
+                    <OverlayPanel style={{ width: '85%' , height: '80%', marginTop: '120px'  }} ref={op} showCloseIcon dismissable>
                         {/* Content */}
                         <NewServiceOrder/>;
                     </OverlayPanel>

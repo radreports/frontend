@@ -7,7 +7,8 @@ import config from "../config";
 import FHIR from "fhirclient"
 import axios from "axios";
 const ServiceOrder = (props) => {
-    props.signalIfValid(true);
+    // props.signalIfValid(true);
+    const [isValidState, setIsValidState] = useState(false);
     // console.log("Service ID called::",window.serviceID);
     const [bodypartItem, setBodypartItem] = useState(null);
     const [patientItem, setPatientItem] = useState(null);
@@ -17,6 +18,17 @@ const ServiceOrder = (props) => {
     const [practitionerItems, SetPractitionerItems] = useState(null);
     const [bodypartItems, SetBodypartItems] = useState(null);
     
+
+    const signalParent = (isValid)=> {
+        setIsValidState(isValid);
+        props.signalIfValid(isValid);
+
+    }
+
+    useEffect(() =>{
+        signalParent(isValidState);
+
+    },[])
     const bodypart_Items = [
         { name: 'Intracranial Haemmorage', code: '27410004' },
         { name: 'Lung Nodules', code: '786838002' },
@@ -78,6 +90,7 @@ const ServiceOrder = (props) => {
             const serviceID = window.serviceID;
     
             console.log("Service ID::",serviceID);
+            signalParent(true);
             // props.signalIfValid(true);
         })
 
