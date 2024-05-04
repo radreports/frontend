@@ -301,7 +301,7 @@ const App = () => {
             items: [
                 {label: 'Diagnostic Reports', icon: 'pi pi-fw pi-id-card', to: '/diagnosticreport' },
                 // {label: 'Diagnostic Details', icon: 'pi pi-fw pi-id-card', to: '/drdetails' },
-                {label: 'New ServiceRequest', icon: 'pi pi-fw pi-id-card', to: '/servicerequest' },
+                // {label: 'New ServiceRequest', icon: 'pi pi-fw pi-id-card', to: '/servicerequest' },
                 {label: 'Dictation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
                 // {label: 'Imaging Studies', icon: 'pi pi-fw pi-id-card', to: '/studies' },
                 // {label: 'Icons', icon: 'pi pi-fw pi-id-card', to: '/icons' },
@@ -315,7 +315,7 @@ const App = () => {
                 // {label: 'HandlingImage', icon: 'pi pi-fw pi-id-card', to: '/HandlingImage' },
                 // { label: 'menu', icon: 'pi pi-fw pi-user-edit', to: '/menu' },
                 // { label: 'Crud', icon: 'pi pi-fw pi-user-edit', to: '/crud' },
-                { label: 'forms', icon: 'pi pi-fw pi-user-edit', to: '/formlayout' },
+                // { label: 'forms', icon: 'pi pi-fw pi-user-edit', to: '/formlayout' },
                 // { label: 'Timeline', icon: 'pi pi-fw pi-calendar', to: '/timeline' },
                 // { label: 'Empty', icon: 'pi pi-fw pi-circle-off', to: '/empty' }
             ]
