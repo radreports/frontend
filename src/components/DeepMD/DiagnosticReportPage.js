@@ -236,13 +236,15 @@ const DiagnosticReportPage = () => {
             const result = rowData.resource.conclusion;
             // pi-thumbs-up
             // pi-exclamation-triangle
-            if (result.toLowerCase().includes("negative")){
+            if (result.toLowerCase().includes("positive")){
             
                 return (
                     <>
                     {/* createId(); */}
                     <span className="p-column-title">Name</span>
-                    <i className="pi pi-check" ></i>
+                    {/* <i className="pi pi-check" ></i> */}
+                    <i className="pi pi-exclamation-triangle"></i>
+
                     {/* <i class="pi pi-check" style="font-size: 2rem"></i> */}
                     {"  " +rowData.resource.conclusion}
                     
@@ -254,7 +256,8 @@ const DiagnosticReportPage = () => {
                 <>
                 {/* createId(); */}
                  <span className="p-column-title">Name</span>
-                 <i className="pi pi-exclamation-triangle"></i>
+                 <i className="pi pi-check" ></i>
+                 {/* <i className="pi pi-exclamation-triangle"></i> */}
                    {"  " +rowData.resource.conclusion}
                   
                 </>
