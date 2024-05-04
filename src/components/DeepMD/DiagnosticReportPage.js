@@ -17,6 +17,7 @@ import axios from 'axios';
 import config from "./config";
 import FHIR from "fhirclient"
 import { OverlayPanel } from 'primereact/overlaypanel';
+import NewServiceOrder from "./imagingstudies/NewServiceOrder"
 import { Link } from "react-router-dom";
 import { ProgressSpinner } from 'primereact/progressspinner';
 
@@ -55,7 +56,7 @@ const DiagnosticReportPage = () => {
     const [radioValue, setRadioValue] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
-
+    const op = useRef(null);
     const getSelection = (e) => {
         let val = e;
         console.log("Selection is ::");
@@ -118,11 +119,18 @@ const DiagnosticReportPage = () => {
          }
          }
     const leftToolbarTemplate = () => {
+        
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <Button label="New" icon="pi pi-plus" className="p-button-success mr-2" onClick={displayOverlay} />
+                <Button label="New" icon="pi pi-plus" className="p-button-success mr-2" onClick={(e) => op.current.toggle(e)} />
+
+                    <OverlayPanel ref={op}>
+                        {/* Content */}
+                        <NewServiceOrder/>;
+                    </OverlayPanel>
                     <Button label="Delete" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedStudies || !selectedStudies.length} />
+                    
                 </div>
             </React.Fragment>
         )
@@ -151,8 +159,8 @@ const DiagnosticReportPage = () => {
         const dd = ""
         return (
            <>
-            <OverlayPanel >
-                
+            <OverlayPanel ref={op} showCloseIcon dismissable>
+            <NewServiceOrder/>;
             
             </OverlayPanel>
             </>
