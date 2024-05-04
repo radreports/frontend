@@ -20,7 +20,7 @@ import { OverlayPanel } from 'primereact/overlaypanel';
 import NewServiceOrder from "./imagingstudies/NewServiceOrder"
 import { Link } from "react-router-dom";
 import { ProgressSpinner } from 'primereact/progressspinner';
-
+import ObservationPage from "./ObservationPage";
 
 const DiagnosticReportPage = () => {
     // let user = JSON.parse(sessionStorage.getItem('authentication'));
@@ -57,6 +57,7 @@ const DiagnosticReportPage = () => {
     const toast = useRef(null);
     const dt = useRef(null);
     const op = useRef(null);
+    const op2 = useRef(null);
     const getSelection = (e) => {
         let val = e;
         console.log("Selection is ::");
@@ -176,7 +177,14 @@ const DiagnosticReportPage = () => {
                 <>
                 {/* createId(); */}
                  <span className="p-column-title">Name</span>
-                 {id}
+                
+                 <Button label={id} icon="pi pi-plus" className="p-button-success mr-2" onClick={(e) => op2.current.toggle(e)} />
+
+                <OverlayPanel style={{ width: '85%' , height: '80%', marginTop: '120px'  }} ref={op2} showCloseIcon dismissable>
+    
+                    {/* <ObservationPage/>; */}
+                    <ObservationPage diagnosticReportId={id} />
+                </OverlayPanel>
                  {/* <Link to="/drdetails">{id}</Link> */}
                    
                    
@@ -375,12 +383,13 @@ const DiagnosticReportPage = () => {
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} studies"
         globalFilter={globalFilter} emptyMessage="No Reports found." header={header} responsiveLayout="scroll">
         {/* <Column selectionMode="single" headerStyle={{ width: '3rem'}}></Column> */}
-        <Column field="id" header="ID" sortable body={idTemplate} headerStyle={{ width: '5%', minWidth: '10rem' }}></Column>
+        
         <Column field="patient" header="Patient" sortable body={patientTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="result" header="Result" sortable body={resultTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="bodypart" header="Bodypart Examined" sortable body={BodypartTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="modality" header="Modality" sortable body={modalityTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
         <Column field="view" header="Image"  body={viewerTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
+        <Column field="id" header="ID" sortable body={idTemplate} headerStyle={{ width: '5%', minWidth: '10rem' }}></Column>
         <Column field="status" header="Status" sortable body={studyStatusTemplate} headerStyle={{ width: '34%', minWidth: '10rem' }}></Column>
     </DataTable>
 
