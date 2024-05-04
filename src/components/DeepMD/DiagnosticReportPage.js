@@ -18,6 +18,9 @@ import config from "./config";
 import FHIR from "fhirclient"
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { Link } from "react-router-dom";
+import { ProgressSpinner } from 'primereact/progressspinner';
+
+
 const DiagnosticReportPage = () => {
     // let user = JSON.parse(sessionStorage.getItem('authentication'));
     let token = sessionStorage.getItem('authentication');
