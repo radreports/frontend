@@ -74,13 +74,13 @@ const DiagnosticReportPage = () => {
     const getPath = client.getPath;
     var my_resource = [] ;
     client.request(`/DiagnosticReport`, {
-        // pageLimit: 0 ,
+        pageLimit: 0 ,
         resolveReferences: [ "subject","result","study"]
     })
     .then(data => {
-        console.log("From diagnostic report",data);
+        console.log("From diagnostic report",data[0]);
         try{
-            const results = data.entry;
+            const results = data[0].entry;
             setDiagnosticReports(results);
         }
         catch(e){}
