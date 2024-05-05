@@ -9,6 +9,7 @@ const ObservationPage = ({ diagnosticReportId }) => {
   const [observations, setObservations] = useState([]);
   const EHR_URL = config.EHR_URL;
   const client = new FHIR.client(EHR_URL);
+  console.log("diagnosticReportId is ::",diagnosticReportId);
   useEffect(() => {
     const EHR_URL = config.EHR_URL;
     // const client = new FHIR.client(" http://hapi.fhir.org/baseR4/");
