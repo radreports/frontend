@@ -121,29 +121,38 @@ const DiagnosticReportPage = () => {
     return (
       <React.Fragment>
         <div className="my-2">
-          <Button
+          {/* <Button
             label="New"
             icon="pi pi-plus"
             className="p-button-success mr-2"
             onClick={(e) => op.current.toggle(e)}
-          />
+          /> */}
 
-          <OverlayPanel
+          {/* <OverlayPanel
             style={{ width: '95%', height: '95%', marginTop: '120px' }}
             ref={op}
             showCloseIcon
             dismissable
           >
-            {/* Content */}
+            
             <NewServiceOrder />;
           </OverlayPanel>
-          <Button
+           */}
+          {/* <Button
             label="Delete"
             icon="pi pi-trash"
             className="p-button-danger"
             onClick={confirmDeleteSelected}
             disabled={!selectedStudies || !selectedStudies.length}
           />
+           */}
+    <Sidebar visible={visible} onHide={() => setVisible(false)} fullScreen>
+    <NewServiceOrder />;
+    </Sidebar>
+    <Button label="New"
+            icon="pi pi-plus"
+            className="p-button-success mr-2" onClick={() => setVisible(true)} />
+
           
 </div>
        
@@ -453,6 +462,7 @@ const DiagnosticReportPage = () => {
 };
 
 const comparisonFn = function (prevProps, nextProps) {
-  return prevProps.location.pathname === nextProps.location.pathname;
+  return (prevProps.location?.pathname === nextProps.location?.pathname);
 };
+
 export default React.memo(DiagnosticReportPage, comparisonFn);

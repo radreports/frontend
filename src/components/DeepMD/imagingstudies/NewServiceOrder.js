@@ -42,8 +42,9 @@ return (
     
   )
 }
-  const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.location.pathname === nextProps.location.pathname;
+const comparisonFn = function (prevProps, nextProps) {
+  // Ensure both prevProps and nextProps have the property before comparing
+  return (prevProps.someProp === nextProps.someProp);
 };
 
 export default React.memo(NewServiceOrder, comparisonFn);
