@@ -191,6 +191,7 @@ const DiagnosticReportPage = () => {
     );
   };
   const idTemplate = (rowData) => {
+    
     try {
       // console.log("patient data ::",rowData);
       const id = rowData.resource.id;
@@ -203,29 +204,41 @@ const DiagnosticReportPage = () => {
         console.log('Button clicked!',e);
         op2.current.toggle(e);
       };
-    
+      const handleClick2 = () => {
+        console.log('Button id!',id);
+        setDiagnosticId(id);
+        // console.log('Button clicked!',e);
+        // op2.current.toggle(e);
+        setVisible(true)} ;
+      
       return (
         <>
           {/* createId(); */}
           <span className="p-column-title">Name</span>
 
-          <Button
+          {/* <Button
             label={id}
             icon="pi pi-plus"
             className="p-button-success mr-2"
             onClick={handleClick}
-          />
+          /> */}
 
-          <OverlayPanel
+          {/* <OverlayPanel
             style={{ width: '95%', height: '95%', marginTop: '120px' }}
             ref={op2}
             showCloseIcon
             dismissable
           >
-            {/* <ObservationPage/>; */}
+           
             <ObservationPage diagnosticReportId={diagnosticId} />
-          </OverlayPanel>
-          {/* <Link to="/drdetails">{id}</Link> */}
+          </OverlayPanel> */}
+
+          <Sidebar visible={visible} onHide={() => setVisible(false)} fullScreen>
+          <ObservationPage diagnosticReportId={diagnosticId} />
+    </Sidebar>
+    <Button label="New"
+            icon="pi pi-plus"
+            className="p-button-success mr-2" onClick={handleClick2} />
         </>
       );
     } catch (err) {}

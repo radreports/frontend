@@ -162,6 +162,7 @@ export const AppConfig = (props) => {
                         <RadioButton inputId="overlay" name="layoutMode" value="overlay" onChange={(e) => props.onLayoutModeChange(e.value)} checked={props.layoutMode === 'overlay'} />
                         <label htmlFor="overlay">Overlay</label>
                     </div>
+                   
                 </div>
 
                 <h5>Themes</h5>
