@@ -56,15 +56,31 @@ const ObservationPage = ({ diagnosticReportId }) => {
 
     fetchObservations();
   }, [diagnosticReportId]);
-
+  const header = (
+    <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+      <h5 className="m-0">Image Radiomics</h5>
+      {/* <span className="block mt-2 md:mt-0 p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+            </span> */}
+    </div>
+  );
   return (
-    <div>
-      <DataTable value={observations}>
+    <div className="grid crud-demo">
+      <div className="col-12">
+        <div className="card">
+      <DataTable value={observations}
+      className="datatable-responsive"
+      header={header}
+      responsiveLayout="scroll"
+      >
         <Column field="id" header="ID"></Column>
         <Column field="code.text" header="Type"></Column>
         <Column field="valueQuantity.value" header="Value"></Column>
         <Column field="valueQuantity.unit" header="Unit"></Column>
       </DataTable>
+      </div>
+      </div>
     </div>
   );
 };

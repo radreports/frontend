@@ -223,23 +223,15 @@ const DiagnosticReportPage = () => {
             onClick={handleClick}
           /> */}
 
-          {/* <OverlayPanel
-            style={{ width: '95%', height: '95%', marginTop: '120px' }}
-            ref={op2}
-            showCloseIcon
-            dismissable
-          >
-           
-            <ObservationPage diagnosticReportId={diagnosticId} />
-          </OverlayPanel> */}
-
+          
+        
           <Sidebar visible={visible} onHide={() => setVisible(false)} fullScreen>
-          <ObservationPage diagnosticReportId={diagnosticId} />
-    </Sidebar>
-    <Button label="New"
-            icon="pi pi-plus"
-            className="p-button-success mr-2" onClick={handleClick2} />
-        </>
+            <ObservationPage diagnosticReportId={diagnosticId} />
+            </Sidebar>
+            <Button label="New"
+                    icon="pi pi-plus"
+                    className="p-button-success mr-2" onClick={handleClick2} />
+            </>
       );
     } catch (err) {}
   };
