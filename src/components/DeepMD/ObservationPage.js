@@ -10,29 +10,29 @@ const ObservationPage = ({ diagnosticReportId }) => {
   const EHR_URL = config.EHR_URL;
   const client = new FHIR.client(EHR_URL);
   console.log("diagnosticReportId is ::",diagnosticReportId);
-  useEffect(() => {
-    const EHR_URL = config.EHR_URL;
-    // const client = new FHIR.client(" http://hapi.fhir.org/baseR4/");
-    const client = new FHIR.client(EHR_URL);
-    const getPath = client.getPath;
-    var my_resource = [] ;
-    client.request(`/DiagnosticReport/${diagnosticReportId}`, {
-        pageLimit: 0 ,
-        // resolveReferences: [ "subject","result","study"]
-    })
-    .then(data => {
-        console.log("From diagnostic report",data);
-        try{
-            // const results = data[0].entry;
+//   useEffect(() => {
+//     const EHR_URL = config.EHR_URL;
+//     // const client = new FHIR.client(" http://hapi.fhir.org/baseR4/");
+//     const client = new FHIR.client(EHR_URL);
+//     const getPath = client.getPath;
+//     var my_resource = [] ;
+//     client.request(`/DiagnosticReport/${diagnosticReportId}`, {
+//         pageLimit: 0 ,
+//         // resolveReferences: [ "subject","result","study"]
+//     })
+//     .then(data => {
+//         console.log("From diagnostic report details ::",data);
+//         try{
+//             // const results = data[0].entry;
             
-        }
-        catch(e){}
-    })
-    .catch(err => {
-        console.log(err);
-     });
+//         }
+//         catch(e){}
+//     })
+//     .catch(err => {
+//         console.log(err);
+//      });
 
-},[]);
+// },[]);
     
   useEffect(() => {
     const fetchObservations = async () => {
@@ -40,14 +40,14 @@ const ObservationPage = ({ diagnosticReportId }) => {
         const reportResponse = await axios.get(`${EHR_URL}/DiagnosticReport/${diagnosticReportId}`);
         console.log(reportResponse.data.result);
         const observationLinks = reportResponse.data.result; // Adjust according to the FHIR resource structure
-        console.log(observationLinks);
+        console.log("observationLinks::",observationLinks);
         const observationPromises = observationLinks.map(link =>
             
             axios.get(`${EHR_URL}/${link.reference}`) // Assumes full URL needs to be constructed
         );
 
         const observationResults = await Promise.all(observationPromises);
-        console.log(observationResults);
+        console.log("observationResults",observationResults);
         setObservations(observationResults.map(res => res.data));
       } catch (error) {
         console.error('Failed to fetch data:', error);

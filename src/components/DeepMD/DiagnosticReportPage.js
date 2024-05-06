@@ -93,6 +93,7 @@ const DiagnosticReportPage = () => {
       })
       .catch((err) => {
         console.log(err);
+
       });
   }, [apiURL]);
 
@@ -207,7 +208,7 @@ const DiagnosticReportPage = () => {
           />
 
           <OverlayPanel
-            style={{ width: '85%', height: '80%', marginTop: '120px' }}
+            style={{ width: '95%', height: '95%', marginTop: '120px' }}
             ref={op2}
             showCloseIcon
             dismissable
@@ -383,7 +384,7 @@ const DiagnosticReportPage = () => {
             onSelectionChange={(e) => getSelection(e.value)}
             dataKey="id"
             paginator
-            rows={10}
+            rows={25}
             rowsPerPageOptions={[5, 10, 25]}
             className="datatable-responsive"
             // Above two are added
