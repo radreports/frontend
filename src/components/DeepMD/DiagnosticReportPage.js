@@ -42,7 +42,8 @@ const DiagnosticReportPage = () => {
 
   const apiURL = config.API_URL + '/studies';
   const vieweerURL = config.VIEWER_URL;
-
+  const [visible2, setVisible2] = useState(false);
+  const [visible3, setVisible3] = useState(false);
   const [visible, setVisible] = useState(false);
   const [diagnosticReports, setDiagnosticReports] = useState(null);
   const [selectedReports, setSelectedReports] = useState(null);
@@ -147,12 +148,12 @@ const DiagnosticReportPage = () => {
             disabled={!selectedStudies || !selectedStudies.length}
           />
            */}
-    <Sidebar visible={visible} onHide={() => setVisible(false)} fullScreen>
+    <Sidebar visible={visible2} onHide={() => setVisible2(false)} fullScreen>
     <NewServiceOrder />;
     </Sidebar>
     <Button label="New"
             icon="pi pi-plus"
-            className="p-button-success mr-2" onClick={() => setVisible(true)} />
+            className="p-button-success mr-2" onClick={() => setVisible2(true)} />
 
           
 </div>
@@ -210,7 +211,7 @@ const DiagnosticReportPage = () => {
         setDiagnosticId(id);
         // console.log('Button clicked!',e);
         // op2.current.toggle(e);
-        setVisible(true)} ;
+        setVisible3(true)} ;
       
       return (
         <>
@@ -226,7 +227,7 @@ const DiagnosticReportPage = () => {
 
           
         
-          <Sidebar visible={visible} onHide={() => setVisible(false)} fullScreen>
+          <Sidebar visible={visible3} onHide={() => setVisible3(false)} fullScreen>
             <ObservationPage diagnosticReportId={diagnosticId} />
             </Sidebar>
             <Button label="Radiomics"
