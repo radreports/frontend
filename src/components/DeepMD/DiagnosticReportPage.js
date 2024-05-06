@@ -81,7 +81,8 @@ const DiagnosticReportPage = () => {
     var my_resource = [];
     client
       .request(`/DiagnosticReport`, {
-        pageLimit: 0,
+        pageLimit: 2,
+        // count:0,
         resolveReferences: ['subject', 'result', 'study'],
       })
       .then((data) => {
@@ -228,8 +229,8 @@ const DiagnosticReportPage = () => {
           <Sidebar visible={visible} onHide={() => setVisible(false)} fullScreen>
             <ObservationPage diagnosticReportId={diagnosticId} />
             </Sidebar>
-            <Button label="New"
-                    icon="pi pi-plus"
+            <Button label="Radiomics"
+                    icon="pi "
                     className="p-button-success mr-2" onClick={handleClick2} />
             </>
       );
