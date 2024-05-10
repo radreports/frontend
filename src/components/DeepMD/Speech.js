@@ -38,20 +38,21 @@ const Dictation = () => {
                 <div className="card">
                     <h5>Advanced</h5>
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12">
+                        <div className="field col-6">
                             <label htmlFor="dictation">Dictation</label>
                             <InputTextarea id="dictation" rows="30" value={transcript} autoResize />
                         </div>
-                        
-                        <button className="p-button-success mr-2 mb-2" onClick={startListening}>Start</button>
-                        <button className="p-button-danger mr-2 mb-2" onClick={SpeechRecognition.stopListening}>Stop</button>
-                        <button onClick={resetTranscript}>Reset</button>
-
-                        <div className="field col-12">
+                        <div className="field col-6">
                             <label htmlFor="write">Write</label>
                             <InputTextarea id="write" rows="30" value={writeText} onChange={(e) => setWriteText(e.target.value)} autoResize />
                         </div>
-                        <button onClick={sendText2}>Transcribe2</button>
+                        
+                        <div className="col-12">
+                            <button className="p-button-success mr-2 mb-2" onClick={startListening}>Start</button>
+                            <button className="p-button-danger mr-2 mb-2" onClick={SpeechRecognition.stopListening}>Stop</button>
+                            <button onClick={resetTranscript}>Reset</button>
+                            <button onClick={sendText2}>Transcribe2</button>
+                        </div>
                         
                         <div className="field col-12">
                             <label htmlFor="result">Report</label>
