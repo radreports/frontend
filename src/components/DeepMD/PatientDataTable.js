@@ -82,7 +82,8 @@ const PatientDataTable = () => {
 
     const observationButton = (rowData) => {
         return (
-            <Button label="Observations" className="p-button-outlined" onClick={() => fetchObservations(rowData.observationIds)} />
+            <Button label="Observations" icon="pi "
+            className="p-button-success mr-2" onClick={() => fetchObservations(rowData.observationIds)} />
         );
     };
 
@@ -99,15 +100,7 @@ const PatientDataTable = () => {
             <Sidebar visible={sidebarVisible} onHide={() => setSidebarVisible(false)}
                      fullScreen modal>
                 <TabView>
-                    <TabPanel header="Imaging Studies">
-                        <DataTable value={imagingStudies} responsiveLayout="scroll">
-                            <Column field="id" header="Study ID" sortable></Column>
-                            <Column field="description" header="Description" sortable></Column>
-                            <Column field="started" header="Study Date" sortable></Column>
-                            <Column field="numberOfSeries" header="Number of Series" sortable></Column>
-                            <Column field="numberOfInstances" header="Number of Instances" sortable></Column>
-                        </DataTable>
-                    </TabPanel>
+                    
                     <TabPanel header="Diagnostic Reports">
                         <DataTable value={diagnosticReports} responsiveLayout="scroll">
                             <Column field="id" header="Report ID" sortable></Column>
@@ -115,6 +108,15 @@ const PatientDataTable = () => {
                             <Column field="conclusionCodeDisplay" header="Conclusion Code" sortable></Column>
                             <Column field="effectiveDateTime" header="Effective Date" sortable></Column>
                             <Column body={observationButton} header="Observations"></Column>
+                        </DataTable>
+                    </TabPanel>
+                    <TabPanel header="Imaging Studies">
+                        <DataTable value={imagingStudies} responsiveLayout="scroll">
+                            <Column field="id" header="Study ID" sortable></Column>
+                            <Column field="description" header="Description" sortable></Column>
+                            <Column field="started" header="Study Date" sortable></Column>
+                            <Column field="numberOfSeries" header="Number of Series" sortable></Column>
+                            <Column field="numberOfInstances" header="Number of Instances" sortable></Column>
                         </DataTable>
                     </TabPanel>
                 </TabView>
