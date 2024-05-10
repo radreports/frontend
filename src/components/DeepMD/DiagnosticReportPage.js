@@ -63,6 +63,23 @@ const DiagnosticReportPage = () => {
   const op = useRef(null);
   const op2 = useRef(null);
   const op3 = useRef(null);
+// ?_include=DiagnosticReport:subject&_include=DiagnosticReport:imagingStudy&_include=DiagnosticReport:result
+  const [reports, setReports] = useState([]);
+  const EHR_URL = config.EHR_URL;
+    useEffect(() => {
+        const fetchReports = async () => {
+            try {
+                const response = await axios.get('https://ehr.radassist.ai/fhir/DiagnosticReport?_include=DiagnosticReport:subject&_include=DiagnosticReport:result&_include=DiagnosticReport:patient');
+                console.log("From axios",response.data)
+                setReports(response.data.entry.map(entry => entry.resource));
+            } catch (error) {
+                // console.error('Failed to fetch diagnostic reports:', error);
+                // console.error('Error fetching data:', error.response.data);
+            }
+        };
+
+        fetchReports();
+    }, []);
   const getSelection = (e) => {
     let val = e;
     console.log('Selection is ::');
@@ -75,7 +92,7 @@ const DiagnosticReportPage = () => {
   ////
 
   useEffect(() => {
-    const EHR_URL = config.EHR_URL;
+    // const EHR_URL = config.EHR_URL;
     // const client = new FHIR.client(" http://hapi.fhir.org/baseR4/");
     const client = new FHIR.client(EHR_URL);
     const getPath = client.getPath;
@@ -84,7 +101,7 @@ const DiagnosticReportPage = () => {
       .request(`/DiagnosticReport`, {
         pageLimit: 2,
         // count:0,
-        resolveReferences: ['subject', 'result', 'study'],
+        resolveReferences: ['subject', 'result', 'study', 'based-on'],
       })
       .then((data) => {
         console.log('From diagnostic report', data[0]);
