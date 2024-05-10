@@ -15,8 +15,13 @@ const PatientDataTable = () => {
     useEffect(() => {
         axios.get('https://ehr.radassist.ai/fhir/Patient')
             .then(response => {
-                console.log(response.data.entry);
-                setPatients(response.data.entry.map(e => e.resource));
+                setPatients(response.data.entry.map(e => {
+                    // Ensuring proper data structure mapping
+                    return {
+                        ...e.resource,
+                        fullName: `${e.resource.name[0].given.join(' ')} ${e.resource.name[0].family}`
+                    }
+                }));
             })
             .catch(error => {
                 console.error('Error fetching data: ', error);
@@ -43,6 +48,7 @@ const PatientDataTable = () => {
     const fetchDiagnosticReports = (patientId) => {
         axios.get(`https://ehr.radassist.ai/fhir/DiagnosticReport?patient=${patientId}`)
             .then(response => {
+                console.log("DiagnosticReport",response.data.entry)
                 setDiagnosticReports(response.data.entry.map(e => e.resource));
             })
             .catch(error => {
@@ -56,13 +62,13 @@ const PatientDataTable = () => {
                        onSelectionChange={onPatientSelect} responsiveLayout="scroll"
                        sortMode="multiple">
                 <Column field="id" header="Patient ID" sortable></Column>
-                <Column field="name[0]" header="Patient Name" sortable></Column>
+                <Column field="fullName" header="Patient Name" sortable></Column>
                 <Column field="birthDate" header="Date of Birth" sortable></Column>
             </DataTable>
 
             <Sidebar visible={sidebarVisible} onHide={() => setSidebarVisible(false)}
                      fullScreen modal>
-                <TabView orientation="left">
+                <TabView>
                     <TabPanel header="Imaging Studies">
                         <DataTable value={imagingStudies} responsiveLayout="scroll">
                             <Column field="id" header="Study ID" sortable></Column>
