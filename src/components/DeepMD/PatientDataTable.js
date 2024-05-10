@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Button } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
 import { TabView, TabPanel } from 'primereact/tabview';
 import axios from 'axios';
@@ -11,12 +12,13 @@ const PatientDataTable = () => {
     const [sidebarVisible, setSidebarVisible] = useState(false);
     const [imagingStudies, setImagingStudies] = useState([]);
     const [diagnosticReports, setDiagnosticReports] = useState([]);
+    const [observations, setObservations] = useState([]);
+    const [observationsVisible, setObservationsVisible] = useState(false);
 
     useEffect(() => {
         axios.get('https://ehr.radassist.ai/fhir/Patient')
             .then(response => {
                 setPatients(response.data.entry.map(e => {
-                    // Ensuring proper data structure mapping
                     return {
                         ...e.resource,
                         fullName: `${e.resource.name[0].given.join(' ')} ${e.resource.name[0].family}`
@@ -48,12 +50,40 @@ const PatientDataTable = () => {
     const fetchDiagnosticReports = (patientId) => {
         axios.get(`https://ehr.radassist.ai/fhir/DiagnosticReport?patient=${patientId}`)
             .then(response => {
-                console.log("DiagnosticReport",response.data.entry)
-                setDiagnosticReports(response.data.entry.map(e => e.resource));
+                setDiagnosticReports(response.data.entry.map(e => {
+                    const conclusionCode = e.resource.conclusionCode && e.resource.conclusionCode.length > 0
+                        ? e.resource.conclusionCode[0].coding[0].code : 'N/A';
+                    const observationIds = e.resource.result ? e.resource.result.map(obs => obs.reference.split('/').pop()) : [];
+                    return {
+                        ...e.resource,
+                        conclusionCodeDisplay: conclusionCode,
+                        observationIds: observationIds
+                    };
+                }));
             })
             .catch(error => {
                 console.error('Error fetching diagnostic reports: ', error);
             });
+    };
+
+    const fetchObservations = (observationIds) => {
+        const requests = observationIds.map(id =>
+            axios.get(`https://ehr.radassist.ai/fhir/Observation/${id}`)
+        );
+        Promise.all(requests)
+            .then(responses => {
+                setObservations(responses.map(res => res.data));
+                setObservationsVisible(true);
+            })
+            .catch(error => {
+                console.error('Error fetching observations: ', error);
+            });
+    };
+
+    const observationButton = (rowData) => {
+        return (
+            <Button label="Observations" className="p-button-outlined" onClick={() => fetchObservations(rowData.observationIds)} />
+        );
     };
 
     return (
@@ -82,11 +112,24 @@ const PatientDataTable = () => {
                         <DataTable value={diagnosticReports} responsiveLayout="scroll">
                             <Column field="id" header="Report ID" sortable></Column>
                             <Column field="status" header="Status" sortable></Column>
-                            <Column field="conclusion" header="Conclusion" sortable></Column>
+                            <Column field="conclusionCodeDisplay" header="Conclusion Code" sortable></Column>
                             <Column field="effectiveDateTime" header="Effective Date" sortable></Column>
+                            <Column body={observationButton} header="Observations"></Column>
                         </DataTable>
                     </TabPanel>
                 </TabView>
+            </Sidebar>
+
+            {/* Observations Sidebar */}
+            <Sidebar visible={observationsVisible} onHide={() => setObservationsVisible(false)} fullScreen modal>
+                <DataTable value={observations} responsiveLayout="scroll">
+                    <Column field="id" header="Observation ID" sortable></Column>
+                    <Column field="status" header="Status" sortable></Column>
+                    <Column field="category[0].text" header="Category" sortable></Column>
+                    <Column field="code.text" header="Description" sortable></Column>
+                    <Column field="valueQuantity.value" header="Value"></Column>
+                    <Column field="valueQuantity.unit" header="Unit"></Column>
+                </DataTable>
             </Sidebar>
         </div>
     );
