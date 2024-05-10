@@ -5,6 +5,7 @@ import { Button } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
 import { TabView, TabPanel } from 'primereact/tabview';
 import axios from 'axios';
+import config from './config';
 
 const PatientDataTable = () => {
     const [patients, setPatients] = useState([]);
@@ -15,6 +16,8 @@ const PatientDataTable = () => {
     const [observations, setObservations] = useState([]);
     const [observationsVisible, setObservationsVisible] = useState(false);
 
+    const EHR_URL = config.EHR_URL;
+    const vieweerURL = config.VIEWER_URL;
     useEffect(() => {
         axios.get('https://ehr.radassist.ai/fhir/Patient')
             .then(response => {
@@ -80,10 +83,23 @@ const PatientDataTable = () => {
             });
     };
 
+    const openViewer = (id) => {
+        // console.log(id);
+        // window.open("https://demo.deepmd.io/viewer-ohif/viewer/" +id, "_blank")
+        window.open(vieweerURL + id, '_blank');
+      };
     const observationButton = (rowData) => {
         return (
             <Button label="Observations" icon="pi "
             className="p-button-success mr-2" onClick={() => fetchObservations(rowData.observationIds)} />
+        );
+    };
+    const dicomButton = (rowData) => {
+        console.log(rowData.conclusionCode[0].coding[0].code);
+        const imageID = rowData.conclusionCode[0].coding[0].code;
+        return (
+            <Button label="DICOM" icon="pi "
+            className="p-button-success mr-2" onClick={() => openViewer(imageID)} />
         );
     };
 
@@ -106,6 +122,7 @@ const PatientDataTable = () => {
                             <Column field="id" header="Report ID" sortable></Column>
                             <Column field="status" header="Status" sortable></Column>
                             <Column field="conclusionCodeDisplay" header="Conclusion Code" sortable></Column>
+                            <Column body={dicomButton} header="Conclusion Code"></Column>
                             <Column field="effectiveDateTime" header="Effective Date" sortable></Column>
                             <Column body={observationButton} header="Observations"></Column>
                         </DataTable>
