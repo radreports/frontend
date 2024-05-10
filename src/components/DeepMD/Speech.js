@@ -17,10 +17,21 @@ const Dictation = () => {
     if (!browserSupportsSpeechRecognition) {
         return <span>Browser doesn't support speech recognition.</span>;
     }
-
+    
+    const sendText1 = () => {
+        console.log("Sending data to server: ", inputText);
+        axios.post("http://127.0.0.1:5000/fhir", { text: inputText })
+            .then(response => {
+                setResultText(response.data);
+                console.log("Response received: ", response.data);
+            })
+            .catch(error => {
+                console.error('Error sending data: ', error);
+            });
+    };
     const sendText2 = () => {
         console.log("Sending data to server: ", inputText);
-        axios.post("http://127.0.0.1:5000/convert", { text: inputText })
+        axios.post("http://127.0.0.1:5000/layman", { text: inputText })
             .then(response => {
                 setResultText(response.data);
                 console.log("Response received: ", response.data);
@@ -35,24 +46,26 @@ const Dictation = () => {
             <div className="col-12">
                 <div className="card">
                     <h5>Advanced</h5>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12">
-                            <label htmlFor="input">Input (Speech or Type)</label>
-                            <InputTextarea id="input" rows="30" value={inputText} onChange={(e) => setInputText(e.target.value)} autoResize />
-                        </div>
-                        <div className="col-12">
+                    <div className="col-12">
                             <button className="p-button-success mr-2 mb-2" onClick={startListening}>Start</button>
                             <button className="p-button-danger mr-2 mb-2" onClick={SpeechRecognition.stopListening}>Stop</button>
                             <button onClick={() => {
                                 resetTranscript();
                                 setInputText('');
                             }}>Reset</button>
-                            <button onClick={sendText2}>Transcribe</button>
+                            <button onClick={sendText1}>FHIR</button>
+                            <button onClick={sendText2}>Layman</button>
                         </div>
-                        <div className="field col-12">
+                    <div className="p-fluid formgrid grid">
+                        <div className="field col-6">
+                            <label htmlFor="input">Input (Speech or Type)</label>
+                            <InputTextarea id="input" rows="15" value={inputText} onChange={(e) => setInputText(e.target.value)} autoResize />
+                        </div>
+                        <div className="field col-6">
                             <label htmlFor="result">Result</label>
-                            <InputTextarea id="result" rows="30" value={resultText} readOnly autoResize />
+                            <InputTextarea id="result" rows="15" value={resultText} readOnly autoResize />
                         </div>
+                        
                     </div>
                 </div>
             </div>
