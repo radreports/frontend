@@ -19,9 +19,12 @@ const PatientDataTable = () => {
     const EHR_URL = config.EHR_URL;
     const vieweerURL = config.VIEWER_URL;
     useEffect(() => {
-        axios.get('https://ehr.radassist.ai/fhir/Patient')
+        
+        axios.get(`${EHR_URL}/Patient`)
             .then(response => {
+                console.log("Patient::",response.data.entry)
                 setPatients(response.data.entry.map(e => {
+                    
                     return {
                         ...e.resource,
                         fullName: `${e.resource.name[0].given.join(' ')} ${e.resource.name[0].family}`
@@ -103,10 +106,47 @@ const PatientDataTable = () => {
         );
     };
 
+    const patientheader = (
+        <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+          <h5 className="m-0">Patients</h5>
+          {/* <span className="block mt-2 md:mt-0 p-input-icon-left">
+                    <i className="pi pi-search" />
+                    <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+                </span> */}
+        </div>
+      );
+      const observationheader = (
+        <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+          <h5 className="m-0">Observations</h5>
+          {/* <span className="block mt-2 md:mt-0 p-input-icon-left">
+                    <i className="pi pi-search" />
+                    <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+                </span> */}
+        </div>
+      );
+      const diagnosticheader = (
+        <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+          <h5 className="m-0">DiagnosticReports</h5>
+          {/* <span className="block mt-2 md:mt-0 p-input-icon-left">
+                    <i className="pi pi-search" />
+                    <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+                </span> */}
+        </div>
+      );
+      const imagingheader = (
+        <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+          <h5 className="m-0">Imaging Studies</h5>
+          {/* <span className="block mt-2 md:mt-0 p-input-icon-left">
+                    <i className="pi pi-search" />
+                    <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+                </span> */}
+        </div>
+      );
     return (
         <div>
             <DataTable value={patients} paginator rows={10} selectionMode="single"
                        onSelectionChange={onPatientSelect} responsiveLayout="scroll"
+                       header = {patientheader}
                        sortMode="multiple">
                 <Column field="id" header="Patient ID" sortable></Column>
                 <Column field="fullName" header="Patient Name" sortable></Column>
@@ -118,17 +158,17 @@ const PatientDataTable = () => {
                 <TabView>
                     
                     <TabPanel header="Diagnostic Reports">
-                        <DataTable value={diagnosticReports} responsiveLayout="scroll">
+                        <DataTable value={diagnosticReports} header = {diagnosticheader} responsiveLayout="scroll">
                             <Column field="id" header="Report ID" sortable></Column>
                             <Column field="status" header="Status" sortable></Column>
-                            <Column field="conclusionCodeDisplay" header="Conclusion Code" sortable></Column>
+                            {/* <Column field="conclusionCodeDisplay" header="Conclusion Code" sortable></Column> */}
                             <Column body={dicomButton} header="Conclusion Code"></Column>
                             <Column field="effectiveDateTime" header="Effective Date" sortable></Column>
                             <Column body={observationButton} header="Observations"></Column>
                         </DataTable>
                     </TabPanel>
                     <TabPanel header="Imaging Studies">
-                        <DataTable value={imagingStudies} responsiveLayout="scroll">
+                        <DataTable value={imagingStudies} header={imagingheader}  responsiveLayout="scroll">
                             <Column field="id" header="Study ID" sortable></Column>
                             <Column field="description" header="Description" sortable></Column>
                             <Column field="started" header="Study Date" sortable></Column>
@@ -141,7 +181,7 @@ const PatientDataTable = () => {
 
             {/* Observations Sidebar */}
             <Sidebar visible={observationsVisible} onHide={() => setObservationsVisible(false)} fullScreen modal>
-                <DataTable value={observations} responsiveLayout="scroll">
+                <DataTable value={observations} header = {observationheader} responsiveLayout="scroll">
                     <Column field="id" header="Observation ID" sortable></Column>
                     <Column field="status" header="Status" sortable></Column>
                     <Column field="category[0].text" header="Category" sortable></Column>
