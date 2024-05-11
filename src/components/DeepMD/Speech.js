@@ -20,7 +20,7 @@ const Dictation = () => {
     
     const sendText1 = () => {
         console.log("Sending data to server: ", inputText);
-        axios.post("http://127.0.0.1:5000/fhir", { text: inputText })
+        axios.post("https://chat.radassist.ai/fhir", { text: inputText })
             .then(response => {
                 setResultText(response.data);
                 console.log("Response received: ", response.data);
@@ -31,7 +31,18 @@ const Dictation = () => {
     };
     const sendText2 = () => {
         console.log("Sending data to server: ", inputText);
-        axios.post("http://127.0.0.1:5000/layman", { text: inputText })
+        axios.post("https://chat.radassist.ai/layman", { text: inputText })
+            .then(response => {
+                setResultText(response.data);
+                console.log("Response received: ", response.data);
+            })
+            .catch(error => {
+                console.error('Error sending data: ', error);
+            });
+    };
+    const sendText3 = () => {
+        console.log("Sending data to server: ", inputText);
+        axios.post("https://chat.radassist.ai/conversation", { text: inputText })
             .then(response => {
                 setResultText(response.data);
                 console.log("Response received: ", response.data);
@@ -55,6 +66,7 @@ const Dictation = () => {
                             }}>Reset</button>
                             <button onClick={sendText1}>FHIR</button>
                             <button onClick={sendText2}>Layman</button>
+                            <button onClick={sendText3}>Medical Scribe</button>
                         </div>
                     <div className="p-fluid formgrid grid">
                         <div className="field col-6">
