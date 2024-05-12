@@ -47,7 +47,8 @@ const DiagnosticReportPage = () => {
   const [visible, setVisible] = useState(false);
   const [diagnosticReports, setDiagnosticReports] = useState(null);
   const [selectedReports, setSelectedReports] = useState(null);
-
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   // const [diagnosticReport, setDiagnosticReport] = useState(null);
   // const [selectedDiagnosticReport, setSelectedDiagnosticReport] = useState(null);
 
@@ -71,7 +72,7 @@ const DiagnosticReportPage = () => {
             try {
                 const response = await axios.get('https://ehr.radassist.ai/fhir/DiagnosticReport?_include=DiagnosticReport:subject&_include=DiagnosticReport:result&_include=DiagnosticReport:patient');
                 console.log("From axios",response.data)
-                setReports(response.data.entry.map(entry => entry.resource));
+                // setReports(response.data.entry.map(entry => entry.resource));
             } catch (error) {
                 // console.error('Failed to fetch diagnostic reports:', error);
                 // console.error('Error fetching data:', error.response.data);
@@ -99,15 +100,17 @@ const DiagnosticReportPage = () => {
     var my_resource = [];
     client
       .request(`/DiagnosticReport`, {
-        pageLimit: 2,
+        // pageLimit: 2,
         // count:0,
         resolveReferences: ['subject', 'result', 'study', 'based-on'],
       })
       .then((data) => {
-        console.log('From diagnostic report', data[0]);
+        console.log('From diagnostic report', data);
         try {
-          const results = data[0].entry;
+          const results = data.entry;
           setDiagnosticReports(results);
+          setDiagnosticReports(data.entry || []);
+      setTotalRecords(data.total);
         } catch (e) {}
       })
       .catch((err) => {
@@ -115,7 +118,9 @@ const DiagnosticReportPage = () => {
 
       });
   }, [apiURL]);
-
+  const handlePageChange = (e) => {
+    setCurrentPage(e.page + 1); // Adjust page index (DataTable is zero-indexed)
+  };
   const confirmDeleteSelected = () => {
     console.log('Delete clicked', selectedStudies);
     for (var study of selectedStudies) {
@@ -214,7 +219,7 @@ const DiagnosticReportPage = () => {
     try {
       // console.log("patient data ::",rowData);
       const id = rowData.resource.id;
-      console.log("Diagnostic Report id is ::",id);
+    //   console.log("Diagnostic Report id is ::",id);
     //   const op2 = React.useRef();
 
       const handleClick = (e) => {
@@ -417,16 +422,17 @@ const DiagnosticReportPage = () => {
             onSelectionChange={(e) => getSelection(e.value)}
             dataKey="id"
             paginator
-            rows={25}
-            rowsPerPageOptions={[5, 10, 25]}
+            rows={20}
+            rowsPerPageOptions={[5, 10, 20]}
             className="datatable-responsive"
             // Above two are added
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} studies"
-            globalFilter={globalFilter}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} reports"globalFilter={globalFilter}
             emptyMessage="No Reports found."
             header={header}
             responsiveLayout="scroll"
+            totalRecords={totalRecords}
+            onPage={handlePageChange}
           >
             {/* <Column selectionMode="single" headerStyle={{ width: '3rem'}}></Column> */}
 
