@@ -7,8 +7,8 @@ const Dictation = () => {
     const { transcript, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
     const [inputText, setInputText] = useState('');
     const [resultText, setResultText] = useState('');
-    // const speech_url = 'https://chat.radassist.ai';
-    const speech_url = 'http://127.0.0.1:5000';
+    const speech_url = 'https://chat.radassist.ai';
+    // const speech_url = 'http://127.0.0.1:5000';
 
     useEffect(() => {
         setInputText(transcript);
@@ -36,7 +36,47 @@ const Dictation = () => {
     const handleStreamOpenAI = () => {
         const url = new URL(`${speech_url}/fhir`);
         url.searchParams.append('text', inputText); // Add text as a query parameter
+        setResultText('');
+        const eventSource = new EventSource(url.toString());
+        eventSource.onmessage = function(event) {
+            console.log("New data:", event.data);
+            setResultText(oldText => oldText  + event.data);
+            if(event.data.includes("end_of_stream")) {
+                console.log("Final data received, closing connection.");
+                eventSource.close();
+                // Handle any cleanup or final actions here
+            }
+        };
+        eventSource.onerror = function(err) {
+            console.log("EventSource failed:", err);
+            eventSource.close();
+        };
+    };
     
+    const handleStreamOpenAI2 = () => {
+        const url = new URL(`${speech_url}/layman`);
+        setResultText('');
+        url.searchParams.append('text', inputText); // Add text as a query parameter
+    
+        const eventSource = new EventSource(url.toString());
+        eventSource.onmessage = function(event) {
+            console.log("New data:", event.data);
+            setResultText(oldText => oldText  + event.data);
+            if(event.data.includes("end_of_stream")) {
+                console.log("Final data received, closing connection.");
+                eventSource.close();
+                // Handle any cleanup or final actions here
+            }
+        };
+        eventSource.onerror = function(err) {
+            console.log("EventSource failed:", err);
+            eventSource.close();
+        };
+    };
+    const handleStreamOpenAI3 = () => {
+        const url = new URL(`${speech_url}/conversation`);
+        url.searchParams.append('text', inputText); // Add text as a query parameter
+        setResultText('');
         const eventSource = new EventSource(url.toString());
         eventSource.onmessage = function(event) {
             console.log("New data:", event.data);
@@ -89,8 +129,8 @@ const Dictation = () => {
                                 setInputText('');
                             }}>Reset</button>
                             <button onClick={handleStreamOpenAI}>FHIR</button>
-                            <button onClick={sendText2}>Layman</button>
-                            <button onClick={sendText3}>Medical Scribe</button>
+                            <button onClick={handleStreamOpenAI2}>Layman</button>
+                            <button onClick={handleStreamOpenAI3}>Medical Scribe</button>
                         </div>
                     <div className="p-fluid formgrid grid">
                         <div className="field col-6">
