@@ -427,12 +427,12 @@ const DiagnosticReportPage = () => {
             className="datatable-responsive"
             // Above two are added
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} reports"globalFilter={globalFilter}
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} reports"globalFilter={globalFilter}
             emptyMessage="No Reports found."
             header={header}
             responsiveLayout="scroll"
-            totalRecords={totalRecords}
-            onPage={handlePageChange}
+            // totalRecords={totalRecords}
+            // onPage={handlePageChange}
           >
             {/* <Column selectionMode="single" headerStyle={{ width: '3rem'}}></Column> */}
 

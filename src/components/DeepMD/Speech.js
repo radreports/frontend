@@ -7,6 +7,8 @@ const Dictation = () => {
     const { transcript, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
     const [inputText, setInputText] = useState('');
     const [resultText, setResultText] = useState('');
+    // const speech_url = 'https://chat.radassist.ai';
+    const speech_url = 'http://127.0.0.1:5000';
 
     useEffect(() => {
         setInputText(transcript);
@@ -20,7 +22,8 @@ const Dictation = () => {
     
     const sendText1 = () => {
         console.log("Sending data to server: ", inputText);
-        axios.post("https://chat.radassist.ai/fhir", { text: inputText })
+        // axios.post("https://chat.radassist.ai/fhir", { text: inputText })
+        axios.post(`${speech_url}/fhir`, { text: inputText })
             .then(response => {
                 setResultText(response.data);
                 console.log("Response received: ", response.data);
@@ -29,9 +32,30 @@ const Dictation = () => {
                 console.error('Error sending data: ', error);
             });
     };
+
+    const handleStreamOpenAI = () => {
+        const url = new URL(`${speech_url}/fhir`);
+        url.searchParams.append('text', inputText); // Add text as a query parameter
+    
+        const eventSource = new EventSource(url.toString());
+        eventSource.onmessage = function(event) {
+            console.log("New data:", event.data);
+            setResultText(oldText => oldText  + event.data);
+            if(event.data.includes("end_of_stream")) {
+                console.log("Final data received, closing connection.");
+                eventSource.close();
+                // Handle any cleanup or final actions here
+            }
+        };
+        eventSource.onerror = function(err) {
+            console.log("EventSource failed:", err);
+            eventSource.close();
+        };
+    };
+    
     const sendText2 = () => {
         console.log("Sending data to server: ", inputText);
-        axios.post("https://chat.radassist.ai/layman", { text: inputText })
+        axios.post(`${speech_url}/layman`, { text: inputText })
             .then(response => {
                 setResultText(response.data);
                 console.log("Response received: ", response.data);
@@ -42,7 +66,7 @@ const Dictation = () => {
     };
     const sendText3 = () => {
         console.log("Sending data to server: ", inputText);
-        axios.post("https://chat.radassist.ai/conversation", { text: inputText })
+        axios.post(`${speech_url}/conversation`, { text: inputText })
             .then(response => {
                 setResultText(response.data);
                 console.log("Response received: ", response.data);
@@ -64,7 +88,7 @@ const Dictation = () => {
                                 resetTranscript();
                                 setInputText('');
                             }}>Reset</button>
-                            <button onClick={sendText1}>FHIR</button>
+                            <button onClick={handleStreamOpenAI}>FHIR</button>
                             <button onClick={sendText2}>Layman</button>
                             <button onClick={sendText3}>Medical Scribe</button>
                         </div>
