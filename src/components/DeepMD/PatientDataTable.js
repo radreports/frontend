@@ -98,7 +98,7 @@ const PatientDataTable = () => {
         );
     };
     const dicomButton = (rowData) => {
-        console.log(rowData.conclusionCode[0].coding[0].code);
+        // console.log(rowData.conclusionCode[0].coding[0].code);
         const imageID = rowData.conclusionCode[0].coding[0].code;
         return (
             <Button label="DICOM" icon="pi "

@@ -50,6 +50,7 @@ import StudiesPage from "./components/DeepMD/StudiesPage";
 import Dictation from './components/DeepMD/Speech';
 import UploadDICOM from "./components/DeepMD/UploadDICOM";
 import DiagnosticReportPage from "./components/DeepMD/DiagnosticReportPage";
+// import WizardComponent from "./components/DeepMD/WizardComponent";
 import PatientDataTable from "./components/DeepMD/PatientDataTable"
 import NewServiceOrder from "./components/DeepMD/imagingstudies/NewServiceOrder"
 import ServiceOrder from './components/DeepMD/imagingstudies/ServiceOrder';
@@ -306,6 +307,8 @@ const App = () => {
                 // {label: 'Diagnostic Details', icon: 'pi pi-fw pi-id-card', to: '/drdetails' },
                 // {label: 'New ServiceRequest', icon: 'pi pi-fw pi-id-card', to: '/servicerequest' },
                 {label: 'Dictation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
+                
+                // {LABEL:'Wizard',icon:'pi pi-fw pi-id-card',to:'/wizard'},
                 // {label: 'Imaging Studies', icon: 'pi pi-fw pi-id-card', to: '/studies' },
                 // {label: 'Icons', icon: 'pi pi-fw pi-id-card', to: '/icons' },
                 
@@ -450,6 +453,7 @@ const App = () => {
                     <Route path="/reports" component={DiagnosticReportPage} />
                     <Route path="/study" component={ServiceOrder} />
                     <Route path="/dictation" component={Dictation} />
+                    {/* <Route path="/wizard" component={WizardComponent} /> */}
                     
                     <Route path="/patients" component={PatientDataTable} />
 

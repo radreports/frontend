@@ -36,62 +36,125 @@ const Dictation = () => {
     const handleStreamOpenAI = () => {
         const url = new URL(`${speech_url}/fhir`);
         url.searchParams.append('text', inputText); // Add text as a query parameter
-        setResultText('');
+        let accumulatedText = ''; // Use a local variable to accumulate text
+    
+        setResultText(''); // Reset the resultText when starting a new stream
         const eventSource = new EventSource(url.toString());
+    
         eventSource.onmessage = function(event) {
             console.log("New data:", event.data);
-            setResultText(oldText => oldText  + event.data);
-            if(event.data.includes("end_of_stream")) {
+            accumulatedText += event.data; // Accumulate text from each message
+    
+            if (event.data.includes("end_of_stream")) {
                 console.log("Final data received, closing connection.");
+                const formattedText = formatText(accumulatedText); // Format the complete text
+                setResultText(formattedText); // Update state with the formatted text
                 eventSource.close();
-                // Handle any cleanup or final actions here
+            } else {
+                // Optionally update the state with unformatted text to show progress
+                setResultText(accumulatedText);
             }
         };
-        eventSource.onerror = function(err) {
-            console.log("EventSource failed:", err);
+    
+        eventSource.onerror = function(event) {
+            if (event.currentTarget.readyState === EventSource.CLOSED) {
+                console.error("EventSource was closed.");
+            } else if (event.currentTarget.readyState === EventSource.CONNECTING) {
+                const formattedText = formatText(accumulatedText); // Format the complete text
+                setResultText(formattedText); // Update state with the formatted text
+                console.error("EventSource is reconnecting.");
+            } else {
+                
+             
+        console.error("EventSource encountered an error:", event);
+            }
             eventSource.close();
         };
     };
     
     const handleStreamOpenAI2 = () => {
         const url = new URL(`${speech_url}/layman`);
-        setResultText('');
         url.searchParams.append('text', inputText); // Add text as a query parameter
+        let accumulatedText = ''; // Use a local variable to accumulate text
     
+        setResultText(''); // Reset the resultText when starting a new stream
         const eventSource = new EventSource(url.toString());
+    
         eventSource.onmessage = function(event) {
             console.log("New data:", event.data);
-            setResultText(oldText => oldText  + event.data);
-            if(event.data.includes("end_of_stream")) {
+            accumulatedText += event.data; // Accumulate text from each message
+    
+            if (event.data.includes("end_of_stream")) {
                 console.log("Final data received, closing connection.");
+                const formattedText = formatText(accumulatedText); // Format the complete text
+                setResultText(formattedText); // Update state with the formatted text
                 eventSource.close();
-                // Handle any cleanup or final actions here
+            } else {
+                // Optionally update the state with unformatted text to show progress
+                setResultText(accumulatedText);
             }
         };
-        eventSource.onerror = function(err) {
-            console.log("EventSource failed:", err);
+    
+        eventSource.onerror = function(event) {
+            if (event.currentTarget.readyState === EventSource.CLOSED) {
+                console.error("EventSource was closed.");
+            } else if (event.currentTarget.readyState === EventSource.CONNECTING) {
+                const formattedText = formatText(accumulatedText); // Format the complete text
+                setResultText(formattedText); // Update state with the formatted text
+                console.error("EventSource is reconnecting.");
+            } else {
+                
+             
+        console.error("EventSource encountered an error:", event);
+            }
             eventSource.close();
         };
     };
     const handleStreamOpenAI3 = () => {
         const url = new URL(`${speech_url}/conversation`);
         url.searchParams.append('text', inputText); // Add text as a query parameter
-        setResultText('');
+        let accumulatedText = ''; // Use a local variable to accumulate text
+    
+        setResultText(''); // Reset the resultText when starting a new stream
         const eventSource = new EventSource(url.toString());
+    
         eventSource.onmessage = function(event) {
             console.log("New data:", event.data);
-            setResultText(oldText => oldText  + event.data);
-            if(event.data.includes("end_of_stream")) {
+            accumulatedText += event.data; // Accumulate text from each message
+    
+            if (event.data.includes("end_of_stream")) {
                 console.log("Final data received, closing connection.");
+                const formattedText = formatText(accumulatedText); // Format the complete text
+                setResultText(formattedText); // Update state with the formatted text
                 eventSource.close();
-                // Handle any cleanup or final actions here
+            } else {
+                // Optionally update the state with unformatted text to show progress
+                setResultText(accumulatedText);
             }
         };
-        eventSource.onerror = function(err) {
-            console.log("EventSource failed:", err);
+    
+        eventSource.onerror = function(event) {
+            if (event.currentTarget.readyState === EventSource.CLOSED) {
+                console.error("EventSource was closed.");
+            } else if (event.currentTarget.readyState === EventSource.CONNECTING) {
+                const formattedText = formatText(accumulatedText); // Format the complete text
+                setResultText(formattedText); // Update state with the formatted text
+                console.error("EventSource is reconnecting.");
+            } else {
+                
+             
+        console.error("EventSource encountered an error:", event);
+            }
             eventSource.close();
         };
+        
     };
+    
+    // Helper function to format text
+    const formatText = (text) => {
+        return text.replace(/\*\*(.*?)\*\*/g, '\n\n$1\n');
+    };
+    
     
     const sendText2 = () => {
         console.log("Sending data to server: ", inputText);
@@ -115,7 +178,7 @@ const Dictation = () => {
                 console.error('Error sending data: ', error);
             });
     };
-
+    
     return (
         <div className="grid">
             <div className="col-12">
@@ -135,11 +198,11 @@ const Dictation = () => {
                     <div className="p-fluid formgrid grid">
                         <div className="field col-6">
                             <label htmlFor="input">Input (Speech or Type)</label>
-                            <InputTextarea id="input" rows="15" value={inputText} onChange={(e) => setInputText(e.target.value)} autoResize />
+                            <InputTextarea id="input" style={{ fontSize: '16px' }} rows="15" value={inputText} onChange={(e) => setInputText(e.target.value)} autoResize />
                         </div>
                         <div className="field col-6">
                             <label htmlFor="result">Result</label>
-                            <InputTextarea id="result" rows="15" value={resultText} readOnly autoResize />
+                            <InputTextarea id="result" style={{ fontSize: '16px' }} rows="15" value={resultText} readOnly autoResize />
                         </div>
                         
                     </div>

@@ -70,8 +70,42 @@ const DiagnosticReportPage = () => {
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await axios.get('https://ehr.radassist.ai/fhir/DiagnosticReport?_include=DiagnosticReport:subject&_include=DiagnosticReport:result&_include=DiagnosticReport:patient');
+                const response = await axios.get('https://ehr.radassist.ai/fhir/DiagnosticReport?_count=1000&_include=DiagnosticReport:subject&_include=DiagnosticReport:result');
                 console.log("From axios",response.data)
+                // console.log("included resources::",response.data.included)
+                
+
+                const entries = response.data.entry || [];
+
+    // Separate DiagnosticReports, Patients, and Observations
+    const diagnosticReports = [];
+    const patients = [];
+    const observations = [];
+
+    entries.forEach(entry => {
+      const resource = entry.resource;
+      if (resource.resourceType === 'DiagnosticReport') {
+        diagnosticReports.push(resource);
+      } else if (resource.resourceType === 'Patient') {
+        patients.push(resource);
+      } else if (resource.resourceType === 'Observation') {
+        observations.push(resource);
+      }
+    });
+
+    // Map resource IDs to actual resources for easier lookup
+    const patientMap = new Map(patients.map(patient => [patient.id, patient]));
+    const observationMap = new Map(observations.map(obs => [obs.id, obs]));
+
+    // Enrich DiagnosticReports with full Patient and Observation resources
+    const enrichedReports = diagnosticReports.map(report => {
+      report.subject = patientMap.get(report.subject.reference.split('/').pop());
+      report.result = report.result.map(ref => observationMap.get(ref.reference.split('/').pop()));
+      return report;
+    });
+
+    console.log('Enriched Diagnostic Reports:', enrichedReports);
+    setDiagnosticReports(enrichedReports || []);
                 // setReports(response.data.entry.map(entry => entry.resource));
             } catch (error) {
                 // console.error('Failed to fetch diagnostic reports:', error);
@@ -101,15 +135,18 @@ const DiagnosticReportPage = () => {
     client
       .request(`/DiagnosticReport`, {
         // pageLimit: 2,
-        // count:0,
+        count:100,
         resolveReferences: ['subject', 'result', 'study', 'based-on'],
       })
       .then((data) => {
-        console.log('From diagnostic report', data);
+        // console.log('From diagnostic report', data);
+        console.log('From diagnostic report', data.entry);
+        // console.log('From diagnostic report', data.link);
         try {
+           
           const results = data.entry;
-          setDiagnosticReports(results);
-          setDiagnosticReports(data.entry || []);
+          // setDiagnosticReports(results);
+          // setDiagnosticReports(data.entry || []);
       setTotalRecords(data.total);
         } catch (e) {}
       })
@@ -218,7 +255,7 @@ const DiagnosticReportPage = () => {
     
     try {
       // console.log("patient data ::",rowData);
-      const id = rowData.resource.id;
+      const id = rowData.id;
     //   console.log("Diagnostic Report id is ::",id);
     //   const op2 = React.useRef();
 
@@ -252,7 +289,7 @@ const DiagnosticReportPage = () => {
           <Sidebar visible={visible3} onHide={() => setVisible3(false)} fullScreen>
             <ObservationPage diagnosticReportId={diagnosticId} />
             </Sidebar>
-            <Button label="Radiomics"
+            <Button label="Measurements"
                     icon="pi "
                     className="p-button-success mr-2" onClick={handleClick2} />
             </>
@@ -261,11 +298,12 @@ const DiagnosticReportPage = () => {
   };
   const patientTemplate = (rowData) => {
     try {
-      // console.log("patient data ::",rowData);
-      const subject = rowData.resource.subject;
+      // console.log("patient data ::",rowData.subject);
+      const subject = rowData.subject;
       const b_date = subject.birthDate;
       // console.log("patient data ::",subject);
       var name = subject.name;
+      // console.log("Name::",name[0].given[0]);
       var fName = name[0].given[0];
       var givenName = name[0].family;
 
@@ -280,17 +318,18 @@ const DiagnosticReportPage = () => {
           {/* ID:  {rowData.resource.subject.id} */}
           <br></br>
           <span className="p-column-title">Patient Sex</span>
-          Sex: {rowData.resource.subject.gender}
+          Sex: {rowData.subject.gender}
           <br></br>
           <span className="p-column-title">Patient DOB</span>
-          DOB: {rowData.resource.subject.birthDate}
+          DOB: {rowData.subject.birthDate}
         </>
       );
     } catch (err) {}
   };
   const resultTemplate = (rowData) => {
     try {
-      const result = rowData.resource.conclusion;
+      console.log("rowData::",rowData.conclusion);
+      const result = rowData.conclusion;
       // pi-thumbs-up
       // pi-exclamation-triangle
       if (result.toLowerCase().includes('positive')) {
@@ -302,7 +341,7 @@ const DiagnosticReportPage = () => {
             <i className="pi pi-exclamation-triangle"></i>
 
             {/* <i class="pi pi-check" style="font-size: 2rem"></i> */}
-            {'  ' + rowData.resource.conclusion}
+            {'  ' + rowData.conclusion}
           </>
         );
       }
@@ -312,7 +351,7 @@ const DiagnosticReportPage = () => {
           <span className="p-column-title">Name</span>
           <i className="pi pi-check"></i>
           {/* <i className="pi pi-exclamation-triangle"></i> */}
-          {'  ' + rowData.resource.conclusion}
+          {'  ' + rowData.conclusion}
         </>
       );
     } catch (err) {}
@@ -321,7 +360,7 @@ const DiagnosticReportPage = () => {
   const BodypartTemplate = (rowData) => {
     try {
       // console.log("Bodypart examined ::",rowData.resource.result[0].bodySite);
-      const result = rowData.resource.result[0].bodySite.text;
+      const result = rowData.result[0].bodySite.text;
       // BodyPartExamined = rowData.resource.series[0].bodySite.display;
       return (
         <>
@@ -357,7 +396,7 @@ const DiagnosticReportPage = () => {
   var studyStatus = '';
   const studyStatusTemplate = (rowData) => {
     try {
-      studyStatus = rowData.resource.status;
+      studyStatus = rowData.status;
       return (
         <>
           <span className="p-column-title">BodyPartExamined</span>
@@ -385,15 +424,17 @@ const DiagnosticReportPage = () => {
 
   const viewerTemplate = (rowData) => {
     const study_instance_uid =
-      rowData.resource.conclusionCode[0].coding[0].code;
+      rowData.conclusionCode[0].coding[0].code;
     // const viewerURL = "https://demo.deepmd.io/viewer-ohif/viewer/" +{rowData.MainDicomTags.StudyInstanceUID};
     return (
       <>
         <div>
           <Button
-            label="  .View "
+            label="  DICOM "
             className="p-button-raised p-button-info"
+
             onClick={() => openViewer(study_instance_uid)}
+
           />
         </div>
       </>
@@ -422,7 +463,7 @@ const DiagnosticReportPage = () => {
             onSelectionChange={(e) => getSelection(e.value)}
             dataKey="id"
             paginator
-            rows={20}
+            rows={30}
             rowsPerPageOptions={[5, 10, 20]}
             className="datatable-responsive"
             // Above two are added
@@ -450,20 +491,20 @@ const DiagnosticReportPage = () => {
               body={resultTemplate}
               headerStyle={{ width: '34%', minWidth: '10rem' }}
             ></Column>
-            <Column
+            {/* <Column
               field="bodypart"
               header="Bodypart Examined"
               sortable
               body={BodypartTemplate}
               headerStyle={{ width: '34%', minWidth: '10rem' }}
-            ></Column>
-            <Column
+            ></Column> */}
+            {/* <Column
               field="modality"
               header="Modality"
               sortable
               body={modalityTemplate}
               headerStyle={{ width: '34%', minWidth: '10rem' }}
-            ></Column>
+            ></Column> */}
             <Column
               field="view"
               header="Image"

@@ -1,0 +1,61 @@
+/* styles.css */
+body {
+    background-color: #1a1a1a; /* Dark background color */
+    color: #f0f0f0; /* Light text color for contrast */
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.wizard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex-direction: column;
+    background-color: #2c2c2c; /* Slightly lighter dark color for the container */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1rem;
+    justify-content: center;
+}
+
+.radio-item {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem; /* Add some space between the radio buttons */
+}
+
+.radio-item label {
+    margin-left: 0.5rem;
+    color: #f0f0f0; /* Ensure labels are also light-colored */
+}
+
+h3, h4 {
+    color: #ffffff; /* Ensure headers are also light-colored */
+    text-align: center;
+}
+
+.p-button {
+    background-color: #007ad9;
+    border: none;
+}
+
+.p-button:hover {
+    background-color: #005bb5;
+}
+
+.p-steps {
+    background-color: #333333; /* Match steps background with dark theme */
+    border: none;
+}
