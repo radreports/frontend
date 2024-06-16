@@ -341,7 +341,7 @@ const DiagnosticReportPage = () => {
             <i className="pi pi-exclamation-triangle"></i>
 
             {/* <i class="pi pi-check" style="font-size: 2rem"></i> */}
-            {'  ' + rowData.conclusion}
+            {/* {'  ' + rowData.conclusion} */}
           </>
         );
       }
@@ -463,7 +463,7 @@ const DiagnosticReportPage = () => {
             onSelectionChange={(e) => getSelection(e.value)}
             dataKey="id"
             paginator
-            rows={30}
+            rows={20}
             rowsPerPageOptions={[5, 10, 20]}
             className="datatable-responsive"
             // Above two are added
@@ -476,19 +476,34 @@ const DiagnosticReportPage = () => {
             // onPage={handlePageChange}
           >
             {/* <Column selectionMode="single" headerStyle={{ width: '3rem'}}></Column> */}
-
+            <Column
+              field="id"
+              header="Report ID"
+              sortable
+              
+              headerStyle={{ width: '10%', minWidth: '10rem' }}
+            ></Column>
             <Column
               field="patient"
               header="Patient"
-              sortable
+              
               body={patientTemplate}
               headerStyle={{ width: '34%', minWidth: '10rem' }}
             ></Column>
+            
             <Column
               field="result"
+              header=""
+              
+              body={resultTemplate}
+              headerStyle={{ width: '1%' }}
+            ></Column>
+            
+            <Column
+              field="conclusion"
               header="Result"
               sortable
-              body={resultTemplate}
+             
               headerStyle={{ width: '34%', minWidth: '10rem' }}
             ></Column>
             {/* <Column
@@ -513,8 +528,8 @@ const DiagnosticReportPage = () => {
             ></Column>
             <Column
               field="id"
-              header="ID"
-              sortable
+              header="Measurements"
+              
               body={idTemplate}
               headerStyle={{ width: '5%', minWidth: '10rem' }}
             ></Column>
