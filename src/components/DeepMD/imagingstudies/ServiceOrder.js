@@ -33,6 +33,9 @@ const ServiceOrder = (props) => {
         { name: 'Intracranial Haemmorage', code: '27410004' },
         { name: 'Lung Nodules', code: '786838002' },
         { name: 'Liver Tumor', code: '93870000' },
+        { name: 'Breast MRI', code: '432634008' },
+        { name: 'Breast Fibroglandular tissue', code: 'breast_fibro' },
+        
         // { name: 'OAR All', code: 'totalseg' },
         { name: 'OAR AMOS', code: 'totalseg' },
         { name: 'OAR Abdoman', code: 'Abdoman' },
@@ -43,7 +46,7 @@ const ServiceOrder = (props) => {
         { name: 'Covid CT', code: '840539006' },
         { name: 'Coronary artery disease', code: '414024009' },
         { name: 'Breast Mammography', code: '71651007' },
-        { name: 'Breast MRI', code: '432634008' },
+        
         { name: 'Brain Tumor', code: '276826005' },
         { name: 'Colon Cancer', code: '275978004' },
         { name: 'Head and Neck Cancer', code: 'Option 11' },
