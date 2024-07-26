@@ -1,0 +1,36 @@
+{
+    "clientId": "radassist-web",
+    "name": "radassist-web",
+    "description": "authenticate UI users",
+    "rootUrl": "https://app.radassist.ai",
+    "adminUrl": "https://app.radassist.ai",
+    "baseUrl": "https://app.radassist.ai",
+    "redirectUris": [
+      "https://app.radassist.ai/*",
+      "http://localhost:3000/*"
+    ],
+    "webOrigins": [
+      "https://app.radassist.ai",
+      "http://localhost:3000"
+    ],
+    "bearerOnly": false,
+    "consentRequired": false,
+    "standardFlowEnabled": true,
+    "implicitFlowEnabled": false,
+    "directAccessGrantsEnabled": true,
+    "publicClient": true,
+    "protocol": "openid-connect",
+    "defaultClientScopes": [
+      "web-origins",
+      "roles",
+      "profile",
+      "email"
+    ],
+    "optionalClientScopes": [
+      "address",
+      "phone",
+      "offline_access",
+      "microprofile-jwt"
+    ]
+  }
+  
