@@ -10,6 +10,7 @@ export const AppConfig = (props) => {
     const [scale, setScale] = useState(14);
     const [scales] = useState([12,13,14,15,16]);
     // const [theme, setTheme] = useState('lara-light-indigo');
+    
     const [theme, setTheme] = useState('mdc-dark-indigo');
     const config = useRef(null);
     let outsideClickListener = useRef(null);

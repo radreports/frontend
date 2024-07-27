@@ -158,26 +158,7 @@ const DiagnosticReportPage = () => {
   const handlePageChange = (e) => {
     setCurrentPage(e.page + 1); // Adjust page index (DataTable is zero-indexed)
   };
-  const confirmDeleteSelected = () => {
-    console.log('Delete clicked', selectedStudies);
-    for (var study of selectedStudies) {
-      const header = {
-        headers: {
-          userID: 'window.name',
-          Authorization: 'token',
-        },
-      };
-      axios.delete(apiURL + '/' + study.study_id, header).then((response) => {
-        // console.log(response.data[0].Studies.patient_mrn);
-        // console.log(response.data);
-        // setStudies(response.data);
-        axios.get(apiURL, header).then((response) => {
-          setStudies(response.data);
-        });
-      });
-      console.log(study.study_id);
-    }
-  };
+
   const leftToolbarTemplate = () => {
     return (
       <React.Fragment>
@@ -475,7 +456,7 @@ const DiagnosticReportPage = () => {
             // totalRecords={totalRecords}
             // onPage={handlePageChange}
           >
-            {/* <Column selectionMode="single" headerStyle={{ width: '3rem'}}></Column> */}
+            <Column selectionMode="single" headerStyle={{ width: '3rem'}}></Column>
             <Column
               field="id"
               header="Report ID"
