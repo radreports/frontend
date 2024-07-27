@@ -75,7 +75,9 @@ const App = () => {
     let url = config.API_URL + "/Token" ;
     const myToast = useRef(null);
     const [layoutMode, setLayoutMode] = useState('overlay');
+    // const [layoutMode, setLayoutMode] = useState('static');
     const [layoutColorMode, setLayoutColorMode] = useState('dark')
+    // const [layoutColorMode, setLayoutColorMode] = useState('light')
     const [inputStyle, setInputStyle] = useState('outlined');
     const [ripple, setRipple] = useState(true);
     const [staticMenuInactive, setStaticMenuInactive] = useState(false);
@@ -274,13 +276,15 @@ const App = () => {
     const onMobileSubTopbarMenuClick = (event) => {
         mobileTopbarMenuClick = true;
         console.log("onMobileSubTopbarMenuClick ...");
+        setLayoutColorMode((prevState) => (prevState === 'dark' ? 'light' : 'dark'));
         // window.keycloak.logout();
-        firebase.auth().signOut();
+        // firebase.auth().signOut();
 
         event.preventDefault();
     }
 
     const onMenuItemClick = (event) => {
+        console.log("onMenuItemClick ...");
         if (!event.item.items) {
             setOverlayMenuActive(false);
             setMobileMenuActive(false);
