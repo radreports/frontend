@@ -50,6 +50,7 @@ import StudiesPage from "./components/DeepMD/StudiesPage";
 import Dictation from './components/DeepMD/Speech';
 import UploadDICOM from "./components/DeepMD/UploadDICOM";
 import DiagnosticReportPage from "./components/DeepMD/DiagnosticReportPage";
+import ImagingStudiesPage from './components/DeepMD/ImagingStudiesPage';
 // import WizardComponent from "./components/DeepMD/WizardComponent";
 import PatientDataTable from "./components/DeepMD/PatientDataTable"
 import NewServiceOrder from "./components/DeepMD/imagingstudies/NewServiceOrder"
@@ -74,8 +75,8 @@ const App = () => {
 
     let url = config.API_URL + "/Token" ;
     const myToast = useRef(null);
-    const [layoutMode, setLayoutMode] = useState('overlay');
-    // const [layoutMode, setLayoutMode] = useState('static');
+    // const [layoutMode, setLayoutMode] = useState('overlay');
+    const [layoutMode, setLayoutMode] = useState('static');
     const [layoutColorMode, setLayoutColorMode] = useState('dark')
     // const [layoutColorMode, setLayoutColorMode] = useState('light')
     const [inputStyle, setInputStyle] = useState('outlined');
@@ -202,14 +203,15 @@ const App = () => {
         // },
        
         {
-            label: 'Radiology', icon: 'pi pi-fw pi-clone',
+            label: 'RadAssist', icon: 'pi pi-fw pi-clone',
             items: [
                 
                 {label: 'Diagnostic Reports', icon: 'pi pi-fw pi-id-card', to: '/diagnosticreport' },
-                {label: 'Patients', icon: 'pi pi-fw pi-id-card', to:'/patients'},
+                {label: 'Radiotherapy', icon: 'pi pi-fw pi-id-card', to: '/contours' },
+                // {label: 'Patients', icon: 'pi pi-fw pi-id-card', to:'/patients'},
                 // {label: 'Diagnostic Details', icon: 'pi pi-fw pi-id-card', to: '/drdetails' },
                 // {label: 'New ServiceRequest', icon: 'pi pi-fw pi-id-card', to: '/servicerequest' },
-                {label: 'Dictation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
+                // {label: 'Dictation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
                 
                 // {LABEL:'Wizard',icon:'pi pi-fw pi-id-card',to:'/wizard'},
                 // {label: 'Imaging Studies', icon: 'pi pi-fw pi-id-card', to: '/studies' },
@@ -313,6 +315,7 @@ const App = () => {
                     <Route path="/reports" component={DiagnosticReportPage} />
                     <Route path="/study" component={ServiceOrder} />
                     <Route path="/dictation" component={Dictation} />
+                    <Route path="/contours" component={ImagingStudiesPage} />
                     {/* <Route path="/wizard" component={WizardComponent} /> */}
                     
                     <Route path="/patients" component={PatientDataTable} />

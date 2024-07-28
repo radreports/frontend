@@ -71,7 +71,7 @@ const DiagnosticReportPage = () => {
   const fetchReports = async () => {
     try {
       const response = await axios.get(
-        'https://ehr.radassist.ai/fhir/DiagnosticReport?_count=1000&_include=DiagnosticReport:subject&_include=DiagnosticReport:result'
+        'https://ehr.radassist.ai/fhir/ImagingStudy?_count=1000&_include=ImagingStudy:subject&reason=123456'
       );
       console.log('From axios', response.data);
       // console.log("included resources::",response.data.included)
@@ -81,39 +81,29 @@ const DiagnosticReportPage = () => {
       // Separate DiagnosticReports, Patients, and Observations
       const diagnosticReports = [];
       const patients = [];
-      const observations = [];
-
+    //   const observations = [];
       entries.forEach((entry) => {
         const resource = entry.resource;
-        if (resource.resourceType === 'DiagnosticReport') {
+        if (resource.resourceType === 'ImagingStudy') {
           diagnosticReports.push(resource);
         } else if (resource.resourceType === 'Patient') {
           patients.push(resource);
-        } else if (resource.resourceType === 'Observation') {
-          observations.push(resource);
-        }
+        } 
       });
-
-      // Map resource IDs to actual resources for easier lookup
       const patientMap = new Map(
         patients.map((patient) => [patient.id, patient])
       );
-      const observationMap = new Map(observations.map((obs) => [obs.id, obs]));
-
-      // Enrich DiagnosticReports with full Patient and Observation resources
       const enrichedReports = diagnosticReports.map((report) => {
         report.subject = patientMap.get(
           report.subject.reference.split('/').pop()
         );
-        report.result = report.result.map((ref) =>
-          observationMap.get(ref.reference.split('/').pop())
-        );
+        
         return report;
       });
 
       console.log('Enriched Diagnostic Reports:', enrichedReports);
+
       setDiagnosticReports(enrichedReports || []);
-      // setReports(response.data.entry.map(entry => entry.resource));
     } catch (error) {
       // console.error('Failed to fetch diagnostic reports:', error);
       // console.error('Error fetching data:', error.response.data);
@@ -136,7 +126,7 @@ const DiagnosticReportPage = () => {
   const deleteReport = async (e) => {
     let report_id = e.id;
     const response = await axios.delete(
-      'https://ehr.radassist.ai/fhir/DiagnosticReport/' + report_id
+      'https://ehr.radassist.ai/fhir/ImagingStudy/' + report_id
     );
     fetchReports();
     console.log('From axios', response.data);
@@ -416,7 +406,9 @@ const DiagnosticReportPage = () => {
   };
 
   const viewerTemplate = (rowData) => {
-    const study_instance_uid = rowData.conclusionCode[0].coding[0].code;
+    const study_instance_uid = ""+rowData.series[0].uid;
+    console.log("Instance id::",rowData.series[0].uid);
+    // rowData.conclusionCode[0].coding[0].code;
     // const viewerURL = "https://demo.deepmd.io/viewer-ohif/viewer/" +{rowData.MainDicomTags.StudyInstanceUID};
     return (
       <>
@@ -433,7 +425,7 @@ const DiagnosticReportPage = () => {
 
   const header = (
     <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-      <h5 className="m-0">DiagnosticReports</h5>
+      <h5 className="m-0">OAR Contours</h5>
       <span className="block mt-2 md:mt-0 p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -476,7 +468,7 @@ const DiagnosticReportPage = () => {
             ></Column>
             <Column
               field="id"
-              header="Report ID"
+              header="Study ID"
               sortable
               headerStyle={{ width: '10%', minWidth: '10rem' }}
             ></Column>
@@ -494,16 +486,16 @@ const DiagnosticReportPage = () => {
               headerStyle={{ width: '34%', minWidth: '10rem' }}
             ></Column>
 
-            <Column
+            {/* <Column
               field="result"
               header=""
               body={resultTemplate}
               headerStyle={{ width: '1%' }}
-            ></Column>
+            ></Column> */}
 
             <Column
-              field="conclusion"
-              header="Result"
+              field="description"
+              header="description"
               sortable
               headerStyle={{ width: '34%', minWidth: '10rem' }}
             ></Column>
@@ -527,12 +519,12 @@ const DiagnosticReportPage = () => {
               body={viewerTemplate}
               headerStyle={{ width: '34%', minWidth: '10rem' }}
             ></Column>
-            <Column
+            {/* <Column
               field="id"
               header="Measurements"
               body={idTemplate}
               headerStyle={{ width: '5%', minWidth: '10rem' }}
-            ></Column>
+            ></Column> */}
             <Column
               field="status"
               header="Status"
