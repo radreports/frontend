@@ -22,7 +22,8 @@ const ObservationPage = ({ diagnosticReportId }) => {
           typeCode: res.data.code.coding[0].code,  // Accessing the first coding entry
           typeDisplay: res.data.code.coding[0].display,
           value: res.data.valueQuantity.value,
-          unit: res.data.valueQuantity.unit
+          unit: res.data.valueQuantity.unit,
+          note:res.data.note[0].text
         }));
         setObservations(formattedData);
       } catch (error) {
@@ -48,7 +49,8 @@ const ObservationPage = ({ diagnosticReportId }) => {
                      header={header}
                      responsiveLayout="scroll">
             <Column field="id" header="ID"></Column>
-            <Column field="typeCode" header="Code"></Column>
+            {/* <Column field="typeCode" header="Code"></Column> */}
+            <Column field="note" header="Code"></Column>
             <Column field="typeDisplay" header="Description"></Column>
             <Column field="value" header="Value"></Column>
             <Column field="unit" header="Unit"></Column>

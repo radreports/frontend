@@ -23,7 +23,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import ObservationPage from './ObservationPage';
 import { Sidebar } from 'primereact/sidebar';
 
-const DiagnosticReportPage = () => {
+const ImagingStudiesPagePage = () => {
   // let user = JSON.parse(sessionStorage.getItem('authentication'));
   let token = sessionStorage.getItem('authentication');
   console.log(sessionStorage);
@@ -473,12 +473,12 @@ const DiagnosticReportPage = () => {
               headerStyle={{ width: '10%', minWidth: '10rem' }}
             ></Column>
             {/* deleteButton */}
-            {/* <Column
+            <Column
               field="Delete"
               header="Image"
               body={deleteButton}
               headerStyle={{ width: '34%', minWidth: '10rem' }}
-            ></Column> */}
+            ></Column>
             <Column
               field="patient"
               header="Patient"
@@ -543,4 +543,4 @@ const comparisonFn = function (prevProps, nextProps) {
   return prevProps.location?.pathname === nextProps.location?.pathname;
 };
 
-export default React.memo(DiagnosticReportPage, comparisonFn);
+export default React.memo(ImagingStudiesPagePage, comparisonFn);

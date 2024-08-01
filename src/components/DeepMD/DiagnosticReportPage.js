@@ -280,7 +280,7 @@ const DiagnosticReportPage = () => {
             <ObservationPage diagnosticReportId={diagnosticId} />
           </Sidebar>
           <Button
-            label="Measurements"
+            label="Radiomics"
             icon="pi "
             className="p-button-success mr-2"
             onClick={handleClick2}
@@ -353,7 +353,8 @@ const DiagnosticReportPage = () => {
   const BodypartTemplate = (rowData) => {
     try {
       // console.log("Bodypart examined ::",rowData.resource.result[0].bodySite);
-      const result = rowData.result[0].bodySite.text;
+      const result = rowData.conclusionCode[0].coding[1].display;
+      console.log('Bodypart examined ::', rowData);
       // BodyPartExamined = rowData.resource.series[0].bodySite.display;
       return (
         <>
@@ -366,8 +367,10 @@ const DiagnosticReportPage = () => {
 
   var modality = '';
   const modalityTemplate = (rowData) => {
+    console.log('Modality::', rowData);
     try {
-      modality = rowData.resource.code.text;
+      modality = rowData.conclusionCode[0].coding[1].code;;
+      console.log('Modality::', rowData);
       return (
         <>
           <span className="p-column-title">BodyPartExamined</span>
@@ -417,6 +420,7 @@ const DiagnosticReportPage = () => {
 
   const viewerTemplate = (rowData) => {
     const study_instance_uid = rowData.conclusionCode[0].coding[0].code;
+    console.log("Note is ::",rowData.note)
     // const viewerURL = "https://demo.deepmd.io/viewer-ohif/viewer/" +{rowData.MainDicomTags.StudyInstanceUID};
     return (
       <>
@@ -457,8 +461,8 @@ const DiagnosticReportPage = () => {
             onSelectionChange={(e) => getSelection(e.value)}
             dataKey="id"
             paginator
-            rows={20}
-            rowsPerPageOptions={[5, 10, 20]}
+            rows={10}
+            rowsPerPageOptions={[5, 10, 20,100]}
             className="datatable-responsive"
             // Above two are added
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
@@ -476,9 +480,9 @@ const DiagnosticReportPage = () => {
             ></Column>
             <Column
               field="id"
-              header="Report ID"
+              header=" ID"
               sortable
-              headerStyle={{ width: '10%', minWidth: '10rem' }}
+              headerStyle={{ width: '5%', minWidth: '5rem' }}
             ></Column>
             {/* deleteButton */}
             {/* <Column
@@ -491,7 +495,7 @@ const DiagnosticReportPage = () => {
               field="patient"
               header="Patient"
               body={patientTemplate}
-              headerStyle={{ width: '34%', minWidth: '10rem' }}
+              headerStyle={{ width: '15%', minWidth: '10rem' }}
             ></Column>
 
             <Column
@@ -505,31 +509,31 @@ const DiagnosticReportPage = () => {
               field="conclusion"
               header="Result"
               sortable
-              headerStyle={{ width: '34%', minWidth: '10rem' }}
+              headerStyle={{ width: '10%', minWidth: '10rem' }}
             ></Column>
-            {/* <Column
+            <Column
               field="bodypart"
               header="Bodypart Examined"
               sortable
               body={BodypartTemplate}
-              headerStyle={{ width: '34%', minWidth: '10rem' }}
-            ></Column> */}
-            {/* <Column
+              headerStyle={{ width: '10%', minWidth: '10rem' }}
+            ></Column>
+            <Column
               field="modality"
               header="Modality"
               sortable
               body={modalityTemplate}
-              headerStyle={{ width: '34%', minWidth: '10rem' }}
-            ></Column> */}
+              headerStyle={{ width: '10%', minWidth: '10rem' }}
+            ></Column>
             <Column
               field="view"
               header="Image"
               body={viewerTemplate}
-              headerStyle={{ width: '34%', minWidth: '10rem' }}
+              headerStyle={{ width: '10%', minWidth: '10rem' }}
             ></Column>
             <Column
               field="id"
-              header="Measurements"
+              header="Radiomics"
               body={idTemplate}
               headerStyle={{ width: '5%', minWidth: '10rem' }}
             ></Column>
