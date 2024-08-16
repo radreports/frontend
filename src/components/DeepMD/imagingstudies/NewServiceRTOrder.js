@@ -1,0 +1,50 @@
+import React, { useState, useEffect, useRef, Fragment } from 'react';
+import ReactDOM from 'react-dom'
+import MultiStep from 'react-multistep'
+import ServiceRTOrder from './ServiceRTOrder'
+import NewImaging from './NewImaging';
+import TemplateDemo from "./TemplateDemo";
+import UploadDICOM from '../UploadDICOM';
+import "./css/main.css"
+import { Button } from 'primereact/button';
+import "./css/app.css"
+import "./css/normilize.css"
+import StepZilla from "react-stepzilla";
+import "./css/skeleton.css";
+
+const NewServiceRTOrder = () => {
+   
+    const steps =
+    [
+        
+    //   {name: 'Step 1', component: <ServiceOrder/> },
+    //   {name: 'Step 2', component: <NewImaging/> },
+    {name: 'Step1', component: <ServiceRTOrder getStore={() => (this.getStore())} updateStore={(u) => {this.updateStore(u)}} />},
+    {name: 'Step2', component: <TemplateDemo getStore={() => (this.getStore())} updateStore={(u) => {this.updateStore(u)}} />},
+      
+    // {name: 'Step3', component: <NewImaging getStore={() => (this.getStore())} updateStore={(u) => {this.updateStore(u)}} />},
+      
+    ]
+    const [isValidstate,setisValidstate ] = useState(false)
+    // props.signalIfValid(false);
+
+return (
+    <div className='container'>
+      <MultiStep activeStep={0} prevButton={{style:{ background: 'white', height: "50px" }, title: 'prev step'}} >
+        <ServiceRTOrder title='  Service Request'/>
+        {/* <TemplateDemo title=' Upload Images'/> */}
+        <NewImaging title='Upload Images'/>
+        {/* <StepThree title='Step 3'/>
+        <StepFour title='Step 4'/> */}
+      </MultiStep>
+     
+    </div>
+    
+  )
+}
+const comparisonFn = function (prevProps, nextProps) {
+  // Ensure both prevProps and nextProps have the property before comparing
+  return (prevProps.someProp === nextProps.someProp);
+};
+
+export default React.memo(NewServiceRTOrder, comparisonFn);

@@ -7,7 +7,7 @@ import config from "../config";
 import FHIR from "fhirclient"
 import axios from "axios";
 
-const ServiceOrder = (props) => {
+const ServiceRTOrder = (props) => {
     const [isValidState, setIsValidState] = useState(false);
     const [bodypartItem, setBodypartItem] = useState(null);
     const [patientItem, setPatientItem] = useState(null);
@@ -27,36 +27,15 @@ const ServiceOrder = (props) => {
     }, []);
 
     const bodypart_Items = [
-        {
-            label: 'Cancer',
-            items: [
-                { name: 'Lung Nodules', code: 'lung' },
-                { name: 'Liver Tumor', code: 'liver' },
-                { name: 'Colon Cancer', code: 'colon' },
-                { name: 'Brain Tumor', code: 'glio' },
-                { name: 'Head and Neck Cancer', code: 'Head_Neck' },
-                { name: 'Prostate', code: 'prostate' },
-                { name: 'Breast MRI', code: 'breast_mri' },
-                { name: 'Breast Fibroglandular tissue', code: 'breast_fibro' },
-                { name: 'Breast Mammography', code: 'mammo' }
-            ]
-        },
-        {
-            label: 'Emergency',
-            items: [
-                { name: 'Intracranial Haemmorage', code: 'ich' },
-                { name: 'Ischemic Stroke', code: 'stroke' },
-                { name: 'Cerebral Aneurysm', code: 'Aneurysm' },
-                { name: 'MSK', code: 'msk' }
-            ]
-        },
 
         {
-            label: 'Radiology',
+            label: 'Contours',
             items: [
-                
-                { name: 'Covid CT', code: '840539006' },
-                { name: 'Coronary artery disease', code: '414024009' }
+                { name: 'Full Organ', code: 'totalseg' },
+                { name: 'OAR Abdoman Multi Organ', code: 'amos' },
+                { name: 'OAR Abdoman', code: 'Abdoman' },
+                { name: 'OAR Thoractic', code: 'thor' },
+                { name: 'Head and Neck', code: 'Head_Neck_OAR' }
             ]
         }
     ];
@@ -170,5 +149,5 @@ const ServiceOrder = (props) => {
 
 // export default React.memo(ServiceOrder, comparisonFn);
 
-export default React.memo(ServiceOrder);
+export default React.memo(ServiceRTOrder);
 

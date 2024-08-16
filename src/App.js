@@ -48,6 +48,7 @@ import './App.scss';
 // import "./assets/main.css";
 import StudiesPage from "./components/DeepMD/StudiesPage";
 import Dictation from './components/DeepMD/Speech';
+import Chat from './components/DeepMD/Chat';
 import UploadDICOM from "./components/DeepMD/UploadDICOM";
 import DiagnosticReportPage from "./components/DeepMD/DiagnosticReportPage";
 import ImagingStudiesPage from './components/DeepMD/ImagingStudiesPage';
@@ -195,19 +196,20 @@ const App = () => {
     }
 
     const menu = [
-        // {
-        //     label: 'Home',
-        //     items: [{
-        //         label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'
-        //     }]
-        // },
+        {
+            label: 'Home',
+            items: [{
+                label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/',
+            }]
+        },
        
         {
             label: 'Radiology', icon: 'pi pi-fw pi-clone',
             items: [
                 
                 {label: 'Diagnostic Reports', icon: 'pi pi-fw pi-id-card', to: '/diagnosticreport' },
-                // {label: 'Radiotherapy', icon: 'pi pi-fw pi-id-card', to: '/contours' },
+                {label: 'Diactation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
+                {label: 'Chat', icon: 'pi pi-fw pi-id-card', to: '/chat' },
                 
             ]
         },
@@ -270,27 +272,7 @@ const App = () => {
             <div className="layout-main-container">
                 <div className="layout-main">
                     <Route path="/" exact render={() => <DiagnosticReportPage colorMode={layoutColorMode} location={location} />} />
-                    <Route path="/formlayout" component={FormLayoutDemo} />
-                    <Route path="/input" component={InputDemo} />
-                    <Route path="/floatlabel" component={FloatLabelDemo} />
-                    <Route path="/HandlingImage" component={HandlingImage} />
-                    <Route path="/invalidstate" component={InvalidStateDemo} />
-                    <Route path="/button" component={ButtonDemo} />
-                    <Route path="/table" component={TableDemo} />
-                    <Route path="/list" component={ListDemo} />
-                    <Route path="/tree" component={TreeDemo} />
-                    <Route path="/panel" component={PanelDemo} />
-                    <Route path="/overlay" component={OverlayDemo} />
-                    <Route path="/media" component={MediaDemo} />
-                    <Route path="/menu" component={MenuDemo} />
-                    <Route path="/messages" component={MessagesDemo} />
-                    <Route path="/blocks" component={BlocksDemo} />
-                    <Route path="/icons" component={IconsDemo} />
-                    <Route path="/file" component={FileDemo} />
-                    <Route path="/chart" render={() => <ChartDemo colorMode={layoutColorMode} location={location} />} />
-                    <Route path="/misc" component={MiscDemo} />
-                    <Route path="/timeline" component={TimelineDemo} />
-                    <Route path="/crud" component={Crud} />
+                    
                     <Route path="/studies" component={StudiesPage} />
                     <Route path="/servicerequest" component={NewServiceOrder} />
                     <Route path="/reports" component={DiagnosticReportPage} />
@@ -298,18 +280,15 @@ const App = () => {
                     <Route path="/dictation" component={Dictation} />
                     <Route path="/contours" component={ImagingStudiesPage} />
                     {/* <Route path="/wizard" component={WizardComponent} /> */}
-                    
+                    <Route path="/chat" component={Chat} />
                     <Route path="/patients" component={PatientDataTable} />
 
                     
-                    <Route path="/drdetails" component={DiagnosticReportDetails} />
+                    
                     {/* CreateDicom */}
                     <Route path="/diagnosticreport" component={DiagnosticReportPage} />
                     
-                    <Route path="/upload" component={UploadDICOM} />
-                    <Route path="/CreateDicom" component={CreateDicom} />
-                    <Route path="/empty" component={EmptyPage} />
-                    <Route path="/documentation" component={Documentation} />
+                    
                 </div>
 
                 <AppFooter layoutColorMode={layoutColorMode} />

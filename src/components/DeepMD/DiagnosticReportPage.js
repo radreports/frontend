@@ -18,6 +18,7 @@ import config from './config';
 import FHIR from 'fhirclient';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import NewServiceOrder from './imagingstudies/NewServiceOrder';
+import Dictation from './Speech';
 import { Link } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import ObservationPage from './ObservationPage';
@@ -43,6 +44,7 @@ const DiagnosticReportPage = () => {
   const vieweerURL = config.VIEWER_URL;
   const [visible2, setVisible2] = useState(false);
   const [visible3, setVisible3] = useState(false);
+  const [visible4, setVisible4] = useState(false);
   const [visible, setVisible] = useState(false);
   const [diagnosticReports, setDiagnosticReports] = useState(null);
   const [selectedReports, setSelectedReports] = useState(null);
@@ -198,11 +200,24 @@ const DiagnosticReportPage = () => {
           >
             <NewServiceOrder />;
           </Sidebar>
+          <Sidebar
+            visible={visible4}
+            onHide={() => setVisible4(false)}
+            fullScreen
+          >
+            <Dictation />;
+          </Sidebar>
           <Button
             label="New"
             icon="pi pi-plus"
             className="p-button-success mr-2"
             onClick={() => setVisible2(true)}
+          />
+          <Button
+            label="Record Notes"
+            icon="pi pi-plus"
+            className="p-button-success mr-2"
+            onClick={() => setVisible4(true)}
           />
         </div>
       </React.Fragment>
@@ -485,12 +500,12 @@ const DiagnosticReportPage = () => {
               headerStyle={{ width: '5%', minWidth: '5rem' }}
             ></Column>
             {/* deleteButton */}
-            {/* <Column
+            <Column
               field="Delete"
               header="Image"
               body={deleteButton}
               headerStyle={{ width: '34%', minWidth: '10rem' }}
-            ></Column> */}
+            ></Column>
             <Column
               field="patient"
               header="Patient"

@@ -17,7 +17,7 @@ import axios from 'axios';
 import config from './config';
 import FHIR from 'fhirclient';
 import { OverlayPanel } from 'primereact/overlaypanel';
-import NewServiceOrder from './imagingstudies/NewServiceOrder';
+import NewServiceRTOrder from './imagingstudies/NewServiceRTOrder';
 import { Link } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import ObservationPage from './ObservationPage';
@@ -170,7 +170,7 @@ const ImagingStudiesPagePage = () => {
             dismissable
           >
             
-            <NewServiceOrder />;
+            <NewServiceRTOrder />;
           </OverlayPanel>
            */}
           {/* <Button
@@ -186,7 +186,7 @@ const ImagingStudiesPagePage = () => {
             onHide={() => setVisible2(false)}
             fullScreen
           >
-            <NewServiceOrder />;
+            <NewServiceRTOrder />;
           </Sidebar>
           <Button
             label="New"
@@ -224,7 +224,7 @@ const ImagingStudiesPagePage = () => {
     return (
       <>
         <OverlayPanel ref={op} showCloseIcon dismissable>
-          <NewServiceOrder />;
+          <NewServiceRTOrder />;
         </OverlayPanel>
       </>
     );
@@ -473,17 +473,17 @@ const ImagingStudiesPagePage = () => {
               headerStyle={{ width: '10%', minWidth: '10rem' }}
             ></Column>
             {/* deleteButton */}
-            <Column
+            {/* <Column
               field="Delete"
               header="Image"
               body={deleteButton}
               headerStyle={{ width: '34%', minWidth: '10rem' }}
-            ></Column>
+            ></Column> */}
             <Column
               field="patient"
               header="Patient"
               body={patientTemplate}
-              headerStyle={{ width: '34%', minWidth: '10rem' }}
+              headerStyle={{ width: '20%', minWidth: '10rem' }}
             ></Column>
 
             {/* <Column
@@ -497,7 +497,7 @@ const ImagingStudiesPagePage = () => {
               field="description"
               header="description"
               sortable
-              headerStyle={{ width: '34%', minWidth: '10rem' }}
+              headerStyle={{ width: '20%', minWidth: '10rem' }}
             ></Column>
             {/* <Column
               field="bodypart"
@@ -517,7 +517,7 @@ const ImagingStudiesPagePage = () => {
               field="view"
               header="Image"
               body={viewerTemplate}
-              headerStyle={{ width: '34%', minWidth: '10rem' }}
+              headerStyle={{ width: '10%', minWidth: '10rem' }}
             ></Column>
             {/* <Column
               field="id"
@@ -530,7 +530,7 @@ const ImagingStudiesPagePage = () => {
               header="Status"
               sortable
               body={studyStatusTemplate}
-              headerStyle={{ width: '34%', minWidth: '10rem' }}
+              headerStyle={{ width: '30%', minWidth: '10rem' }}
             ></Column>
           </DataTable>
         </div>
