@@ -20,7 +20,7 @@ const Chat = () => {
             setUserInput('');
 
             try {
-                const response = await axios.post('http://104.171.203.4:7860/chat', {
+                const response = await axios.post('https://chat.deepmd.io/chat', {
                     user_input: userInput,
                     history: newMessages.map(msg => [msg.role, msg.content]),
                     temperature: 0.6,
@@ -50,7 +50,7 @@ const Chat = () => {
             formData.append('file', selectedFile);
 
             try {
-                const response = await axios.post('http://104.171.203.4:7860/extract-text', formData, {
+                const response = await axios.post('https://chat.deepmd.io/extract-text', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
