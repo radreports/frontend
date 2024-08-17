@@ -93,9 +93,7 @@ const Chat = () => {
     };
 
     const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Copied to clipboard!');
-        }).catch(err => {
+        navigator.clipboard.writeText(text).catch(err => {
             console.error('Failed to copy: ', err);
         });
     };
@@ -108,7 +106,6 @@ const Chat = () => {
                     <div key={idx} className={`message ${msg.role}`}>
                         <Card className="message-card">
                             <div className="message-content">
-                                <strong>{msg.role === 'user' ? 'You' : 'RadAssistant'}:</strong> {msg.content}
                                 {msg.role === 'RadAssistant' && (
                                     <AiOutlineCopy
                                         className="copy-icon"
@@ -116,6 +113,7 @@ const Chat = () => {
                                         title="Copy to clipboard"
                                     />
                                 )}
+                                <strong>{msg.role === 'user' ? 'You' : 'RadAssistant'}:</strong> {msg.content}
                             </div>
                         </Card>
                     </div>
