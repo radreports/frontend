@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
-import { Divider } from 'primereact/divider';
 import { FiSend } from 'react-icons/fi';
-import { AiOutlinePaperClip } from 'react-icons/ai';
+import { AiOutlinePaperClip, AiOutlineCopy } from 'react-icons/ai'; // Add copy icon
 import axios from 'axios';
 import "./chat.css";
 
@@ -12,12 +11,25 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const chatEndRef = useRef(null);
+
+    // Set a higher timeout for Axios requests
+    axios.defaults.timeout = 10 * 60 * 1000; // 10 minutes
+
+    // Automatically scroll to the bottom when messages change
+    useEffect(() => {
+        if (chatEndRef.current) {
+            chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages]);
 
     const sendMessage = async () => {
         if (userInput.trim()) {
             const newMessages = [...messages, { role: 'user', content: userInput }];
             setMessages(newMessages);
             setUserInput('');
+            setLoading(true); // Show loading indicator
 
             try {
                 const response = await axios.post('https://chat.deepmd.io/chat', {
@@ -32,6 +44,8 @@ const Chat = () => {
                 setMessages(response.data.history.map(([role, content]) => ({ role, content })));
             } catch (error) {
                 console.error('Error sending message:', error);
+            } finally {
+                setLoading(false); // Hide loading indicator
             }
         }
     };
@@ -40,12 +54,21 @@ const Chat = () => {
         setUserInput(e.target.value);
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Prevents a new line from being added
+            sendMessage();
+        }
+    };
+
     const handleFileChange = (e) => {
         setSelectedFile(e.target.files[0]);
     };
 
     const uploadFile = async () => {
         if (selectedFile) {
+            setLoading(true); // Show loading indicator
+
             const formData = new FormData();
             formData.append('file', selectedFile);
 
@@ -59,13 +82,22 @@ const Chat = () => {
                 // Add extracted text to messages
                 const extractedText = response.data.extracted_text;
                 const newMessages = [...messages, { role: 'user', content: `Uploaded file: ${selectedFile.name}` }, { role: 'RadAssistant', content: extractedText }];
-                console.log("Message::", extractedText);
                 setMessages(newMessages);
                 setSelectedFile(null);
             } catch (error) {
                 console.error('Error uploading file:', error);
+            } finally {
+                setLoading(false); // Hide loading indicator
             }
         }
+    };
+
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
     };
 
     return (
@@ -77,10 +109,24 @@ const Chat = () => {
                         <Card className="message-card">
                             <div className="message-content">
                                 <strong>{msg.role === 'user' ? 'You' : 'RadAssistant'}:</strong> {msg.content}
+                                {msg.role === 'RadAssistant' && (
+                                    <AiOutlineCopy
+                                        className="copy-icon"
+                                        onClick={() => copyToClipboard(msg.content)}
+                                        title="Copy to clipboard"
+                                    />
+                                )}
                             </div>
                         </Card>
                     </div>
                 ))}
+                {loading && (
+                    <div className="loading-indicator">
+                        <div className="spinner"></div>
+                        <p>Waiting for response...</p>
+                    </div>
+                )}
+                <div ref={chatEndRef} />
             </div>
 
             <div className="chat-footer">
@@ -89,6 +135,7 @@ const Chat = () => {
                     id="file-upload"
                     style={{ display: 'none' }}
                     onChange={handleFileChange}
+                    disabled={loading} // Disable when loading
                 />
                 <Button
                     icon={<AiOutlinePaperClip />}
@@ -96,22 +143,30 @@ const Chat = () => {
                     tooltip="Attach a file"
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => document.getElementById('file-upload').click()}
+                    disabled={loading} // Disable when loading
                 />
                 <Button
                     label="Upload"
                     className="p-button-info"
                     onClick={uploadFile}
-                    disabled={!selectedFile}
+                    disabled={!selectedFile || loading} // Disable when no file selected or loading
                 />
                 <InputTextarea
                     value={userInput}
                     onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
                     placeholder="Message RadAssistant"
                     className="message-input"
                     autoResize={false}
                     rows={1}
+                    disabled={loading} // Disable when loading
                 />
-                <Button icon={<FiSend />} className="send-button" onClick={sendMessage} />
+                <Button
+                    icon={<FiSend />}
+                    className="send-button"
+                    onClick={sendMessage}
+                    disabled={loading || !userInput.trim()} // Disable when loading or input is empty
+                />
             </div>
         </div>
     );
