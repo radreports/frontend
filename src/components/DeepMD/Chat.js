@@ -59,11 +59,34 @@ const Chat = () => {
     }, [messages]);
 
     const sendMessage = async () => {
-        if (userInput.trim()) {
+        if (selectedFile) {
+            // Handle file upload
+            setLoading(true);
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await axios.post('https://chat.deepmd.io/extract-text', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                const extractedText = response.data.extracted_text;
+                const newMessages = [...messages, { role: 'user', content: `Uploaded file: ${selectedFile.name}` }, { role: 'RadAssistant', content: extractedText }];
+                setMessages(newMessages);
+                setSelectedFile(null);
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            } finally {
+                setLoading(false);
+            }
+        } else if (userInput.trim()) {
+            // Handle text message
             const newMessages = [...messages, { role: 'user', content: userInput }];
             setMessages(newMessages);
             setUserInput('');
-            setLoading(true); // Show loading indicator
+            setLoading(true);
 
             try {
                 const response = await axios.post('https://chat.deepmd.io/chat', {
@@ -79,7 +102,7 @@ const Chat = () => {
             } catch (error) {
                 console.error('Error sending message:', error);
             } finally {
-                setLoading(false); // Hide loading indicator
+                setLoading(false);
             }
         }
     };
@@ -97,33 +120,6 @@ const Chat = () => {
 
     const handleFileChange = (e) => {
         setSelectedFile(e.target.files[0]);
-    };
-
-    const uploadFile = async () => {
-        if (selectedFile) {
-            setLoading(true); // Show loading indicator
-
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-
-            try {
-                const response = await axios.post('https://chat.deepmd.io/extract-text', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-
-                // Add extracted text to messages
-                const extractedText = response.data.extracted_text;
-                const newMessages = [...messages, { role: 'user', content: `Uploaded file: ${selectedFile.name}` }, { role: 'RadAssistant', content: extractedText }];
-                setMessages(newMessages);
-                setSelectedFile(null);
-            } catch (error) {
-                console.error('Error uploading file:', error);
-            } finally {
-                setLoading(false); // Hide loading indicator
-            }
-        }
     };
 
     const copyToClipboard = (text) => {
@@ -177,13 +173,7 @@ const Chat = () => {
                     onClick={() => document.getElementById('file-upload').click()}
                     disabled={loading} // Disable when loading
                 />
-                <Button
-                    label="Upload"
-                    className="p-button-info"
-                    onClick={uploadFile}
-                    disabled={!selectedFile || loading} // Disable when no file selected or loading
-                />
-                
+
                 <InputTextarea
                     value={userInput}
                     onChange={handleInputChange}
@@ -194,7 +184,7 @@ const Chat = () => {
                     rows={1}
                     disabled={loading} // Disable when loading
                 />
-                {isSpeechSupported && (
+                                {isSpeechSupported && (
                     <Button
                         icon={<FaMicrophone color={isRecording ? 'red' : 'black'} />}
                         className="p-button"
@@ -207,7 +197,7 @@ const Chat = () => {
                     icon={<FiSend />}
                     className="send-button"
                     onClick={sendMessage}
-                    disabled={loading || !userInput.trim()} // Disable when loading or input is empty
+                    disabled={loading || (!userInput.trim() && !selectedFile)} // Disable when loading or both input and file are empty
                 />
             </div>
         </div>
