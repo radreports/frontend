@@ -74,6 +74,7 @@ import { Toast } from 'primereact/toast';
 
 import SignInScreen from './SignInScreen';
 import CustomAuth from './CustomAuth';
+// import AudioChat from './components/DeepMD/AudioChat';
 // import {toast} from "react-toastify";
 const firebaseConfig = {
     apiKey: "AIzaSyBRETnvKbUf-27kWxQBBNz3NRDJH4EQQNs",
@@ -255,6 +256,7 @@ const App = () => {
             label: 'AI Assistant',
             items: [
                 {label: 'AI Chat', icon: 'pi pi-fw pi-id-card', to: '/chat' },
+                // {label: 'Audio Chat', icon: 'pi pi-fw pi-id-card', to: '/audiochat' },
                 {label: 'Diactation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
                 
             ]
@@ -351,6 +353,7 @@ const App = () => {
                     <Route path="/contours" component={ImagingStudiesPage} />
                     {/* <Route path="/wizard" component={WizardComponent} /> */}
                     <Route path="/chat" component={Chat} />
+                    {/* <Route path="/audiochat" component={AudioChat} /> */}
                     <Route path="/patients" component={PatientDataTable} />
 
                     
