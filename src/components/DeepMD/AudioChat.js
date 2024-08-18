@@ -17,9 +17,12 @@ const AudioChat = () => {
     const [audioBlob, setAudioBlob] = useState(null);
     const chatEndRef = useRef(null);
     const mediaRecorderRef = useRef(null);
+    const silenceDetectionRef = useRef(null);
+
+    const MIN_DECIBELS = -45;
+    const SILENCE_THRESHOLD_MS = 1000; // 1 second of silence
 
     useEffect(() => {
-        // Automatically scroll to the bottom when messages change
         if (chatEndRef.current) {
             chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
@@ -27,16 +30,20 @@ const AudioChat = () => {
 
     const toggleRecording = () => {
         if (isRecording) {
-            // Stop recording
             mediaRecorderRef.current.stop();
+            if (silenceDetectionRef.current) {
+                silenceDetectionRef.current.disconnect();
+            }
         } else {
-            // Start recording
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(stream => {
                     mediaRecorderRef.current = new MediaRecorder(stream);
                     mediaRecorderRef.current.ondataavailable = (event) => {
                         setAudioBlob(event.data);
                     };
+
+                    detectSilence(stream, onSilence, onSpeak);
+
                     mediaRecorderRef.current.start();
                 })
                 .catch(err => {
@@ -59,16 +66,12 @@ const AudioChat = () => {
                     },
                 });
 
-                // const newMessages = [...messages, { role: 'user', content: 'Sent an audio message' }, { role: 'RadAssistant', content: response.data.transcription }];
-                console.log('Response:', response.data);
                 const { extracted_text, llama_response, history } = response.data;
 
-                // Update messages with the extracted text and LLaMA response
                 const newMessages = [...messages, 
                     { role: 'user', content: `You said: ${extracted_text}` }, 
                     { role: 'RadAssistant', content: llama_response }
                 ];
-                setMessages(newMessages);
                 setMessages(newMessages);
             } catch (error) {
                 console.error('Error sending audio message:', error);
@@ -79,12 +82,58 @@ const AudioChat = () => {
         }
     };
 
+    const detectSilence = (
+        stream,
+        onSoundEnd = () => {},
+        onSoundStart = () => {},
+        silence_delay = SILENCE_THRESHOLD_MS,
+        min_decibels = MIN_DECIBELS
+    ) => {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = ctx.createAnalyser();
+        const streamNode = ctx.createMediaStreamSource(stream);
+        streamNode.connect(analyser);
+        analyser.minDecibels = min_decibels;
+
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        let silence_start = performance.now();
+        let triggered = false;
+
+        function loop(time) {
+            requestAnimationFrame(loop);
+            analyser.getByteFrequencyData(data);
+            if (data.some(v => v > 0)) {
+                if (triggered) {
+                    triggered = false;
+                    onSoundStart();
+                }
+                silence_start = time;
+            }
+            if (!triggered && time - silence_start > silence_delay) {
+                onSoundEnd();
+                triggered = true;
+            }
+        }
+        loop();
+
+        silenceDetectionRef.current = analyser;
+    };
+
+    function onSilence() {
+        console.log('Silence detected');
+        toggleRecording(); // Stop recording and send the audio message
+    }
+
+    function onSpeak() {
+        console.log('Speaking detected');
+    }
+
     const sendMessage = async () => {
         if (userInput.trim()) {
             const newMessages = [...messages, { role: 'user', content: userInput }];
             setMessages(newMessages);
             setUserInput('');
-            setLoading(true); // Show loading indicator
+            setLoading(true);
 
             try {
                 const response = await axios.post('https://chat.deepmd.io/chat', {
@@ -95,12 +144,11 @@ const AudioChat = () => {
                     max_gen_len: 512
                 });
 
-                // Update messages with the response from RadAssistant
                 setMessages(response.data.history.map(([role, content]) => ({ role, content })));
             } catch (error) {
                 console.error('Error sending message:', error);
             } finally {
-                setLoading(false); // Hide loading indicator
+                setLoading(false);
             }
         }
     };
@@ -111,7 +159,7 @@ const AudioChat = () => {
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault(); // Prevents a new line from being added
+            e.preventDefault();
             sendMessage();
         }
     };
@@ -122,7 +170,7 @@ const AudioChat = () => {
 
     const uploadFile = async () => {
         if (selectedFile) {
-            setLoading(true); // Show loading indicator
+            setLoading(true);
 
             const formData = new FormData();
             formData.append('file', selectedFile);
@@ -134,7 +182,6 @@ const AudioChat = () => {
                     },
                 });
 
-                // Add extracted text to messages
                 const extractedText = response.data.extracted_text;
                 const newMessages = [...messages, { role: 'user', content: `Uploaded file: ${selectedFile.name}` }, { role: 'RadAssistant', content: extractedText }];
                 setMessages(newMessages);
@@ -142,7 +189,7 @@ const AudioChat = () => {
             } catch (error) {
                 console.error('Error uploading file:', error);
             } finally {
-                setLoading(false); // Hide loading indicator
+                setLoading(false);
             }
         }
     };
