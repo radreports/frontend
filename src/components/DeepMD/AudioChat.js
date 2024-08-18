@@ -30,44 +30,31 @@ const AudioChat = () => {
 
     const toggleRecording = () => {
         if (isRecording) {
-            mediaRecorderRef.current.stop();
+            stopRecording(); // Stop recording and silence detection
             if (silenceDetectionRef.current) {
                 silenceDetectionRef.current.disconnect();
             }
         } else {
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(stream => {
-                    mediaRecorderRef.current = new MediaRecorder(stream);
-                    mediaRecorderRef.current.ondataavailable = (event) => {
-                        setAudioBlob(event.data);
-                    };
-
-                    detectSilence(stream, onSilence, onSpeak);
-
-                    mediaRecorderRef.current.start();
-                })
-                .catch(err => {
-                    console.error('Error accessing microphone:', err);
-                });
+            startRecording(); // Start recording and silence detection
         }
-        setIsRecording(!isRecording);
     };
+    
 
     const sendAudioMessage = async () => {
         if (audioBlob) {
             setLoading(true);
             const formData = new FormData();
             formData.append('audio', audioBlob, 'recording.wav');
-
+    
             try {
                 const response = await axios.post('https://chat.deepmd.io/audio', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-
+    
                 const { extracted_text, llama_response, history } = response.data;
-
+    
                 const newMessages = [...messages, 
                     { role: 'user', content: `You said: ${extracted_text}` }, 
                     { role: 'RadAssistant', content: llama_response }
@@ -81,7 +68,7 @@ const AudioChat = () => {
             }
         }
     };
-
+    
     const detectSilence = (
         stream,
         onSoundEnd = () => {},
@@ -121,12 +108,46 @@ const AudioChat = () => {
 
     function onSilence() {
         console.log('Silence detected');
-        toggleRecording(); // Stop recording and send the audio message
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+            mediaRecorderRef.current.stop(); // Stop recording
+             // Send audio when silence is detected
+             sendAudioMessage();
+             console.log('Audio sent');
+        }
     }
-
+    
     function onSpeak() {
         console.log('Speaking detected');
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'recording') {
+            startRecording(); // Resume recording
+        }
     }
+    const startRecording = () => {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorderRef.current = new MediaRecorder(stream);
+                mediaRecorderRef.current.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        setAudioBlob(event.data); // Save the blob for sending
+                        sendAudioMessage(); // Send audio when data is available
+                    }
+                };
+                detectSilence(stream, onSilence, onSpeak);
+                mediaRecorderRef.current.start(); // Start recording
+                setIsRecording(true);
+            })
+            .catch(err => {
+                console.error('Error accessing microphone:', err);
+            });
+    };
+    
+    const stopRecording = () => {
+        if (mediaRecorderRef.current) {
+            mediaRecorderRef.current.stop();
+            setIsRecording(false);
+        }
+    };
+     
 
     const sendMessage = async () => {
         if (userInput.trim()) {
