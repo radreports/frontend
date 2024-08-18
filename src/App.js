@@ -255,7 +255,7 @@ const App = () => {
             label: 'AI Assistant',
             items: [
                 {label: 'AI Chat', icon: 'pi pi-fw pi-id-card', to: '/chat' },
-                // {label: 'Diactation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
+                {label: 'Diactation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
                 
             ]
         },
