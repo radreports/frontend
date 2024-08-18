@@ -16,13 +16,39 @@ const Chat = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [isSpeechSupported, setIsSpeechSupported] = useState(false);
     const [selectedLanguage, setSelectedLanguage] = useState('en-US');
+    const [audioBlob, setAudioBlob] = useState(null);
     const chatEndRef = useRef(null);
     const recognitionRef = useRef(null);
+    const mediaRecorderRef = useRef(null);
 
-    useEffect(() => {
-        // Check if the browser supports the Web Speech API
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            setIsSpeechSupported(true);
+    // Function to detect browser type
+    const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+
+    const startRecordingAudio = () => {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    const mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorderRef.current = mediaRecorder;
+                    mediaRecorder.start();
+
+                    mediaRecorder.ondataavailable = (e) => {
+                        setAudioBlob(e.data);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+                })
+                .catch(err => {
+                    console.error('Error accessing microphone', err);
+                });
+        }
+    };
+
+    const toggleRecording = () => {
+        // Initialize speech recognition and audio recording only when the button is clicked
+        if (!recognitionRef.current && isChrome) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognitionRef.current = new SpeechRecognition();
             recognitionRef.current.continuous = true;  // Set continuous listening
@@ -38,20 +64,23 @@ const Chat = () => {
 
             recognitionRef.current.onerror = (event) => {
                 console.error('Speech recognition error', event);
+                if (event.error === 'no-speech') {
+                    startRecordingAudio();
+                }
             };
         }
-    }, [selectedLanguage]);
 
-    const toggleRecording = () => {
         if (isRecording) {
-            recognitionRef.current.stop();
+            recognitionRef.current && recognitionRef.current.stop();
+            mediaRecorderRef.current && mediaRecorderRef.current.stop();
         } else {
-            recognitionRef.current.start();
+            recognitionRef.current && recognitionRef.current.start();
+            !isChrome && startRecordingAudio(); // For non-Chrome browsers, start recording audio
         }
+
         setIsRecording(!isRecording);
     };
 
-    // Automatically scroll to the bottom when messages change
     useEffect(() => {
         if (chatEndRef.current) {
             chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -60,7 +89,6 @@ const Chat = () => {
 
     const sendMessage = async () => {
         if (selectedFile) {
-            // Handle file upload
             setLoading(true);
             const formData = new FormData();
             formData.append('file', selectedFile);
@@ -82,7 +110,6 @@ const Chat = () => {
                 setLoading(false);
             }
         } else if (userInput.trim()) {
-            // Handle text message
             const newMessages = [...messages, { role: 'user', content: userInput }];
             setMessages(newMessages);
             setUserInput('');
@@ -97,10 +124,36 @@ const Chat = () => {
                     max_gen_len: 512
                 });
 
-                // Update messages with the response from RadAssistant
                 setMessages(response.data.history.map(([role, content]) => ({ role, content })));
             } catch (error) {
                 console.error('Error sending message:', error);
+            } finally {
+                setLoading(false);
+            }
+        } else if (audioBlob) {
+            setLoading(true);
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'recording.mp3');
+
+            try {
+                const response = await axios.post('https://chat.deepmd.io/audio', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                console.log("response", response.data.extracted_text);
+                const extractedText = response.data.extracted_text;
+
+            // Update the chat messages with the extracted text
+            const newMessages = [
+                ...messages, 
+                { role: 'user', content: 'Sent an audio message' },
+                { role: 'RadAssistant', content: extractedText }
+            ];
+            setMessages(newMessages);
+            setAudioBlob(null); // 
+            } catch (error) {
+                console.error('Error sending audio message:', error);
             } finally {
                 setLoading(false);
             }
@@ -130,7 +183,6 @@ const Chat = () => {
 
     return (
         <div className="col-12 chat-container">
-            {/* Displaying chat messages */}
             <div className="chat-messages">
                 {messages.map((msg, idx) => (
                     <div key={idx} className={`message ${msg.role}`}>
@@ -184,20 +236,18 @@ const Chat = () => {
                     rows={1}
                     disabled={loading} // Disable when loading
                 />
-                                {isSpeechSupported && (
-                    <Button
-                        icon={<FaMicrophone color={isRecording ? 'red' : 'black'} />}
-                        className="p-button"
-                        onClick={toggleRecording}
-                        tooltip={isRecording ? "Stop Recording" : "Start Recording"}
-                        tooltipOptions={{ position: 'top' }}
-                    />
-                )}
+                <Button
+                    icon={<FaMicrophone color={isRecording ? 'red' : 'black'} />}
+                    className="p-button"
+                    onClick={toggleRecording}
+                    tooltip={isRecording ? "Stop Recording" : "Start Recording"}
+                    tooltipOptions={{ position: 'top' }}
+                />
                 <Button
                     icon={<FiSend />}
                     className="send-button"
                     onClick={sendMessage}
-                    disabled={loading || (!userInput.trim() && !selectedFile)} // Disable when loading or both input and file are empty
+                    disabled={loading || (!userInput.trim() && !selectedFile && !audioBlob)} // Disable when loading or all inputs are empty
                 />
             </div>
         </div>
