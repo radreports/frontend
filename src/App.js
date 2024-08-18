@@ -308,15 +308,16 @@ const App = () => {
     }, []);
     if (!isSignedIn) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <div style={{ flex: 1, textAlign: 'center', paddingRight: '20px' }}>
-                <h1 style={{ color: 'white' }}>Welcome to RadAssist AI</h1>
-                <p style={{ color: 'white' }}>Please sign in to continue:</p>
-            </div>
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-            <CustomAuth />
-        </div>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div style={{ flex: 1, textAlign: 'right', paddingRight: '20px', maxWidth: '20%' }}>
+        <h1 style={{ color: 'white' }}>Welcome to RadAssist AI</h1>
+        <p style={{ color: 'white' }}>Please sign in to continue:</p>
     </div>
+    <div style={{ flex: 2, display: 'flex', justifyContent: 'center', maxWidth: '80%' }}>
+        <CustomAuth />
+    </div>
+</div>
+
         );
       }
     return (

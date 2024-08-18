@@ -6,15 +6,15 @@ import { Divider } from 'primereact/divider';
 import { Message } from 'primereact/message';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
-import './CustomAuth.css';  // Assuming you add the CSS above in this file
+import './CustomAuth.css';
 
 const CustomAuth = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [displayName, setDisplayName] = useState('');  // New state for display name
     const [authError, setAuthError] = useState(null);
     const [isRegistering, setIsRegistering] = useState(false);
 
-    // Initialize Firebase (if not already initialized)
     if (!firebase.apps.length) {
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
@@ -30,7 +30,12 @@ const CustomAuth = () => {
     const handleEmailLogin = async () => {
         try {
             if (isRegistering) {
-                await firebase.auth().createUserWithEmailAndPassword(email, password);
+                const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                
+                // Update the user profile with the display name
+                await userCredential.user.updateProfile({
+                    displayName: displayName
+                });
             } else {
                 await firebase.auth().signInWithEmailAndPassword(email, password);
             }
@@ -55,6 +60,19 @@ const CustomAuth = () => {
             <div className="auth-card">
                 <h2>{isRegistering ? 'Sign Up' : 'Login'}</h2>
 
+                {isRegistering && (
+                    <div className="p-field p-col-12 p-md-4">
+                        <label style={{ color: 'black' }} htmlFor="displayName">Display Name</label>
+                        <InputText
+                            id="displayName"
+                            value={displayName}
+                            onChange={(e) => setDisplayName(e.target.value)}
+                            placeholder="Enter your display name"
+                            className="p-inputtext-sm p-d-block"
+                        />
+                    </div>
+                )}
+
                 <div className="p-field p-col-12 p-md-4">
                     <label style={{ color: 'black' }} htmlFor="email">Email</label>
                     <InputText
@@ -68,7 +86,7 @@ const CustomAuth = () => {
                 </div>
 
                 <div className="p-field p-col-12 p-md-4">
-                    <label style={{ color: 'black' }} l htmlFor="password">Password</label>
+                    <label style={{ color: 'black' }} htmlFor="password">Password</label>
                     <Password
                         id="password"
                         value={password}
