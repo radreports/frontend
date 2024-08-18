@@ -56,7 +56,7 @@ const AudioChat = () => {
                 const { extracted_text, llama_response, history } = response.data;
     
                 const newMessages = [...messages, 
-                    { role: 'user', content: `You said: ${extracted_text}` }, 
+                    { role: 'user', content: ` ${extracted_text}` }, 
                     { role: 'RadAssistant', content: llama_response }
                 ];
                 setMessages(newMessages);
@@ -111,7 +111,7 @@ const AudioChat = () => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
             mediaRecorderRef.current.stop(); // Stop recording
              // Send audio when silence is detected
-             sendAudioMessage();
+            
              console.log('Audio sent');
         }
     }
@@ -290,17 +290,23 @@ const AudioChat = () => {
                     tooltip={isRecording ? "Stop Recording" : "Start Recording"}
                     tooltipOptions={{ position: 'top' }}
                 />
-                <Button
+                {/* <Button
                     label="Send Audio"
                     className="p-button-warning"
                     onClick={sendAudioMessage}
                     disabled={!audioBlob || loading} // Disable when no audio recorded or loading
-                />
+                /> */}
                 <Button
                     icon={<FiSend />}
                     className="send-button"
-                    onClick={sendMessage}
-                    disabled={loading || !userInput.trim()} // Disable when loading or input is empty
+                    onClick={() => {
+                        if (audioBlob) {
+                            sendAudioMessage(); // Send the recorded audio if available
+                        } else if (userInput.trim()) {
+                            sendMessage(); // Otherwise, send the text message
+                        }
+                    }}
+                    disabled={loading || (!userInput.trim() && !audioBlob)} // Disable if loading or neither input nor audioBlob is available
                 />
             </div>
         </div>
