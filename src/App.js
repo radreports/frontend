@@ -71,7 +71,35 @@ import Button from 'react-bootstrap/Button';
 import "firebase/messaging";
 import { getMessaging, getToken,onMessage } from "firebase/messaging";
 import { Toast } from 'primereact/toast';
+
+import SignInScreen from './SignInScreen';
+import CustomAuth from './CustomAuth';
 // import {toast} from "react-toastify";
+const firebaseConfig = {
+    apiKey: "AIzaSyBRETnvKbUf-27kWxQBBNz3NRDJH4EQQNs",
+    authDomain: "webapp-5f6fb.firebaseapp.com",
+    projectId: "webapp-5f6fb",
+    storageBucket: "webapp-5f6fb.appspot.com",
+    messagingSenderId: "889954314933",
+    appId: "1:889954314933:web:169a3fde633b2a22a2ecfc"
+  };
+  
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  
+  // FirebaseUI Configuration
+  const uiConfig = {
+    signInFlow: 'popup',
+    signInOptions: [
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    //   firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+      firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    ],
+    callbacks: {
+      signInSuccessWithAuthResult: () => false,
+    },
+  };
 const App = () => {
 
     let url = config.API_URL + "/Token" ;
@@ -90,6 +118,7 @@ const App = () => {
     const location = useLocation();
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [myToken,setMyToken] = useState(false);
+    const [user, setUser] = useState(null);
     PrimeReact.ripple = true;
     const showToast = (severityValue, summaryValue, detailValue) => {   
         myToast.current.show({severity: severityValue, summary: summaryValue, detail: detailValue,life:6000});   
@@ -256,7 +285,40 @@ const App = () => {
         'p-ripple-disabled': ripple === false,
         'layout-theme-light': layoutColorMode === 'light'
     });
+    console.log("isSignedIn: ",isSignedIn);
+    useEffect(() => {
+        // Firebase auth state observer
+        const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                console.log("User is signed in: ", user);
+                setUser(user); // Set the user state if signed in
+            } else {
+                setUser(null); // Clear the user state if signed out
+            }
+        });
 
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
+    }, []);
+    useEffect(() => {
+        const unregisterAuthObserver = firebase.auth().onAuthStateChanged(user => {
+            setIsSignedIn(!!user); // Set isSignedIn to true if user exists, otherwise false
+        });
+        return () => unregisterAuthObserver(); // Cleanup on unmount
+    }, []);
+    if (!isSignedIn) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <div style={{ flex: 1, textAlign: 'center', paddingRight: '20px' }}>
+                <h1 style={{ color: 'white' }}>Welcome to RadAssist AI</h1>
+                <p style={{ color: 'white' }}>Please sign in to continue:</p>
+            </div>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+            <CustomAuth />
+        </div>
+    </div>
+        );
+      }
     return (
         <div className={wrapperClass} onClick={onWrapperClick}>
             <Toast ref={myToast} />
@@ -272,7 +334,7 @@ const App = () => {
             <div className="layout-main-container">
                 <div className="layout-main">
                     <Route path="/" exact render={() => <DiagnosticReportPage colorMode={layoutColorMode} location={location} />} />
-                    
+                    {/* <Route path="/login" component={SignInScreen} /> */}
                     <Route path="/studies" component={StudiesPage} />
                     <Route path="/servicerequest" component={NewServiceOrder} />
                     <Route path="/reports" component={DiagnosticReportPage} />

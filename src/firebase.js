@@ -3,12 +3,12 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBRETnvKbUf-27kWxQBBNz3NRDJH4EQQNs",
-    authDomain: "app.radassist.ai",
-    projectId: "webapp-5f6fb",
-  //   storageBucket: "YOUR_STORAGE_BUCKET",
-  //   messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "webapp",
+  apiKey: "AIzaSyBRETnvKbUf-27kWxQBBNz3NRDJH4EQQNs",
+  authDomain: "localhost:3000",
+  projectId: "webapp-5f6fb",
+  storageBucket: "webapp-5f6fb.appspot.com",
+  messagingSenderId: "889954314933",
+  appId: "1:889954314933:web:169a3fde633b2a22a2ecfc"
   };
 
 // Initialize Firebase
