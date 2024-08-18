@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { FiSend } from 'react-icons/fi';
 import { AiOutlinePaperClip, AiOutlineCopy } from 'react-icons/ai';
-import { FaMicrophone, FaHeadphones } from 'react-icons/fa';
+import { FaMicrophone } from 'react-icons/fa';
 import axios from 'axios';
 import "./chat.css";
 
@@ -15,54 +15,42 @@ const AudioChat = () => {
     const [loading, setLoading] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
     const [audioBlob, setAudioBlob] = useState(null);
-    const [audioURL, setAudioURL] = useState(null);
-    const recognitionRef = useRef(null);
+    const chatEndRef = useRef(null);
     const mediaRecorderRef = useRef(null);
 
-    const handleHeadphoneClick = () => {
-        if (!isRecording) {
-            startRecordingAudio();
-        } else {
-            stopRecordingAudio();
+    useEffect(() => {
+        // Automatically scroll to the bottom when messages change
+        if (chatEndRef.current) {
+            chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
-    };
+    }, [messages]);
 
-    const startRecordingAudio = () => {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    const toggleRecording = () => {
+        if (isRecording) {
+            // Stop recording
+            mediaRecorderRef.current.stop();
+        } else {
+            // Start recording
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(stream => {
-                    const mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorderRef.current = mediaRecorder;
-                    mediaRecorder.start();
-
-                    mediaRecorder.ondataavailable = (e) => {
-                        setAudioBlob(e.data);
+                    mediaRecorderRef.current = new MediaRecorder(stream);
+                    mediaRecorderRef.current.ondataavailable = (event) => {
+                        setAudioBlob(event.data);
                     };
-
-                    mediaRecorder.onstop = async () => {
-                        stream.getTracks().forEach(track => track.stop());
-                        await sendAudioToServer();
-                    };
+                    mediaRecorderRef.current.start();
                 })
                 .catch(err => {
-                    console.error('Error accessing microphone', err);
+                    console.error('Error accessing microphone:', err);
                 });
         }
-        setIsRecording(true);
+        setIsRecording(!isRecording);
     };
 
-    const stopRecordingAudio = () => {
-        if (mediaRecorderRef.current) {
-            mediaRecorderRef.current.stop();
-        }
-        setIsRecording(false);
-    };
-
-    const sendAudioToServer = async () => {
+    const sendAudioMessage = async () => {
         if (audioBlob) {
             setLoading(true);
             const formData = new FormData();
-            formData.append('audio', audioBlob, 'recording.mp3');
+            formData.append('audio', audioBlob, 'recording.wav');
 
             try {
                 const response = await axios.post('https://chat.deepmd.io/audio', formData, {
@@ -71,25 +59,103 @@ const AudioChat = () => {
                     },
                 });
 
-                const { extracted_text, llama_response_text, audio_url } = response.data;
-                setMessages([...messages, { role: 'RadAssistant', content: llama_response_text }]);
-                setAudioURL(audio_url);
-                setAudioBlob(null);
+                // const newMessages = [...messages, { role: 'user', content: 'Sent an audio message' }, { role: 'RadAssistant', content: response.data.transcription }];
+                console.log('Response:', response.data);
+                const { extracted_text, llama_response, history } = response.data;
+
+                // Update messages with the extracted text and LLaMA response
+                const newMessages = [...messages, 
+                    { role: 'user', content: `You said: ${extracted_text}` }, 
+                    { role: 'RadAssistant', content: llama_response }
+                ];
+                setMessages(newMessages);
+                setMessages(newMessages);
             } catch (error) {
                 console.error('Error sending audio message:', error);
             } finally {
                 setLoading(false);
+                setAudioBlob(null);
             }
         }
     };
 
-    const playAudio = () => {
-        const audio = new Audio(audioURL);
-        audio.play();
+    const sendMessage = async () => {
+        if (userInput.trim()) {
+            const newMessages = [...messages, { role: 'user', content: userInput }];
+            setMessages(newMessages);
+            setUserInput('');
+            setLoading(true); // Show loading indicator
+
+            try {
+                const response = await axios.post('https://chat.deepmd.io/chat', {
+                    user_input: userInput,
+                    history: newMessages.map(msg => [msg.role, msg.content]),
+                    temperature: 0.6,
+                    top_p: 0.9,
+                    max_gen_len: 512
+                });
+
+                // Update messages with the response from RadAssistant
+                setMessages(response.data.history.map(([role, content]) => ({ role, content })));
+            } catch (error) {
+                console.error('Error sending message:', error);
+            } finally {
+                setLoading(false); // Hide loading indicator
+            }
+        }
+    };
+
+    const handleInputChange = (e) => {
+        setUserInput(e.target.value);
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Prevents a new line from being added
+            sendMessage();
+        }
+    };
+
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+    };
+
+    const uploadFile = async () => {
+        if (selectedFile) {
+            setLoading(true); // Show loading indicator
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await axios.post('https://chat.deepmd.io/extract-text', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                // Add extracted text to messages
+                const extractedText = response.data.extracted_text;
+                const newMessages = [...messages, { role: 'user', content: `Uploaded file: ${selectedFile.name}` }, { role: 'RadAssistant', content: extractedText }];
+                setMessages(newMessages);
+                setSelectedFile(null);
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            } finally {
+                setLoading(false); // Hide loading indicator
+            }
+        }
+    };
+
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
     };
 
     return (
         <div className="col-12 chat-container">
+            {/* Displaying chat messages */}
             <div className="chat-messages">
                 {messages.map((msg, idx) => (
                     <div key={idx} className={`message ${msg.role}`}>
@@ -117,40 +183,56 @@ const AudioChat = () => {
             </div>
 
             <div className="chat-footer">
+                <input
+                    type="file"
+                    id="file-upload"
+                    style={{ display: 'none' }}
+                    onChange={handleFileChange}
+                    disabled={loading} // Disable when loading
+                />
+                <Button
+                    icon={<AiOutlinePaperClip />}
+                    className="attachment-button"
+                    tooltip="Attach a file"
+                    tooltipOptions={{ position: 'top' }}
+                    onClick={() => document.getElementById('file-upload').click()}
+                    disabled={loading} // Disable when loading
+                />
+                <Button
+                    label="Upload"
+                    className="p-button-info"
+                    onClick={uploadFile}
+                    disabled={!selectedFile || loading} // Disable when no file selected or loading
+                />
+                
                 <InputTextarea
                     value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            sendMessage();
-                        }
-                    }}
+                    onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
                     placeholder="Message RadAssistant"
                     className="message-input"
                     autoResize={false}
                     rows={1}
-                    disabled={loading}
+                    disabled={loading} // Disable when loading
                 />
                 <Button
-                    icon={<FaHeadphones />}
+                    icon={<FaMicrophone color={isRecording ? 'red' : 'black'} />}
                     className="p-button"
-                    onClick={handleHeadphoneClick}
+                    onClick={toggleRecording}
                     tooltip={isRecording ? "Stop Recording" : "Start Recording"}
                     tooltipOptions={{ position: 'top' }}
                 />
-                {audioURL && (
-                    <Button
-                        label="Play Response"
-                        className="p-button"
-                        onClick={playAudio}
-                    />
-                )}
+                <Button
+                    label="Send Audio"
+                    className="p-button-warning"
+                    onClick={sendAudioMessage}
+                    disabled={!audioBlob || loading} // Disable when no audio recorded or loading
+                />
                 <Button
                     icon={<FiSend />}
                     className="send-button"
                     onClick={sendMessage}
-                    disabled={loading || (!userInput.trim() && !selectedFile && !audioBlob)}
+                    disabled={loading || !userInput.trim()} // Disable when loading or input is empty
                 />
             </div>
         </div>

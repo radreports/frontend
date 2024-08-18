@@ -183,15 +183,7 @@ const Chat = () => {
                     onClick={uploadFile}
                     disabled={!selectedFile || loading} // Disable when no file selected or loading
                 />
-                {isSpeechSupported && (
-                    <Button
-                        icon={<FaMicrophone color={isRecording ? 'red' : 'black'} />}
-                        className="p-button"
-                        onClick={toggleRecording}
-                        tooltip={isRecording ? "Stop Recording" : "Start Recording"}
-                        tooltipOptions={{ position: 'top' }}
-                    />
-                )}
+                
                 <InputTextarea
                     value={userInput}
                     onChange={handleInputChange}
@@ -202,6 +194,15 @@ const Chat = () => {
                     rows={1}
                     disabled={loading} // Disable when loading
                 />
+                {isSpeechSupported && (
+                    <Button
+                        icon={<FaMicrophone color={isRecording ? 'red' : 'black'} />}
+                        className="p-button"
+                        onClick={toggleRecording}
+                        tooltip={isRecording ? "Stop Recording" : "Start Recording"}
+                        tooltipOptions={{ position: 'top' }}
+                    />
+                )}
                 <Button
                     icon={<FiSend />}
                     className="send-button"
