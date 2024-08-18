@@ -39,7 +39,11 @@ const AudioChat = () => {
         }
     };
     
-
+    useEffect(() => {
+        if (audioBlob) {
+            sendAudioMessage(); // Automatically send the audio when available
+        }
+    }, [audioBlob]);
     const sendAudioMessage = async () => {
         if (audioBlob) {
             setLoading(true);
@@ -111,7 +115,9 @@ const AudioChat = () => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
             mediaRecorderRef.current.stop(); // Stop recording
              // Send audio when silence is detected
-            
+            //  if (audioBlob) {
+            //     sendAudioMessage(); // Send the recorded audio if available
+            // }
              console.log('Audio sent');
         }
     }
@@ -129,7 +135,7 @@ const AudioChat = () => {
                 mediaRecorderRef.current.ondataavailable = (event) => {
                     if (event.data.size > 0) {
                         setAudioBlob(event.data); // Save the blob for sending
-                        sendAudioMessage(); // Send audio when data is available
+                        // Send audio when data is available
                     }
                 };
                 detectSilence(stream, onSilence, onSpeak);
