@@ -92,14 +92,14 @@ const Chat = () => {
             setLoading(true);
             const formData = new FormData();
             formData.append('file', selectedFile);
-
+    
             try {
                 const response = await axios.post('https://chat.deepmd.io/extract-text', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-
+    
                 const extractedText = response.data.extracted_text;
                 const newMessages = [...messages, { role: 'user', content: `Uploaded file: ${selectedFile.name}` }, { role: 'RadAssistant', content: extractedText }];
                 setMessages(newMessages);
@@ -114,7 +114,7 @@ const Chat = () => {
             setMessages(newMessages);
             setUserInput('');
             setLoading(true);
-
+    
             try {
                 const response = await axios.post('https://chat.deepmd.io/chat', {
                     user_input: userInput,
@@ -123,7 +123,7 @@ const Chat = () => {
                     top_p: 0.9,
                     max_gen_len: 512
                 });
-
+    
                 setMessages(response.data.history.map(([role, content]) => ({ role, content })));
             } catch (error) {
                 console.error('Error sending message:', error);
@@ -134,24 +134,21 @@ const Chat = () => {
             setLoading(true);
             const formData = new FormData();
             formData.append('audio', audioBlob, 'recording.mp3');
-
+    
             try {
                 const response = await axios.post('https://chat.deepmd.io/audio', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                console.log("response", response.data.extracted_text);
-                const extractedText = response.data.extracted_text;
-
-            // Update the chat messages with the extracted text
-            const newMessages = [
-                ...messages, 
-                { role: 'user', content: 'Sent an audio message' },
-                { role: 'RadAssistant', content: extractedText }
-            ];
-            setMessages(newMessages);
-            setAudioBlob(null); // 
+    
+                const newMessages = [
+                    ...messages, 
+                    { role: 'user', content: response.data.extracted_text },
+                    { role: 'RadAssistant', content: response.data.llama_response }
+                ];
+                setMessages(newMessages);
+                setAudioBlob(null); // Clear the audio blob after sending
             } catch (error) {
                 console.error('Error sending audio message:', error);
             } finally {
@@ -159,6 +156,7 @@ const Chat = () => {
             }
         }
     };
+    
 
     const handleInputChange = (e) => {
         setUserInput(e.target.value);
