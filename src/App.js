@@ -225,20 +225,19 @@ const App = () => {
     }
 
     const menu = [
-        {
-            label: 'Home',
-            items: [{
-                label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/',
-            }]
-        },
+        // {
+        //     label: 'Home',
+        //     items: [{
+        //         label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/',
+        //     }]
+        // },
        
         {
             label: 'Radiology', icon: 'pi pi-fw pi-clone',
             items: [
                 
                 {label: 'Diagnostic Reports', icon: 'pi pi-fw pi-id-card', to: '/diagnosticreport' },
-                {label: 'Diactation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
-                {label: 'Chat', icon: 'pi pi-fw pi-id-card', to: '/chat' },
+                
                 
             ]
         },
@@ -250,6 +249,14 @@ const App = () => {
                 // {label: 'Chest X-ray', icon: 'pi pi-fw pi-id-card', to: '/Cxr' },
                 // {label: 'Overlay', icon: 'pi pi-fw pi-id-card', to: '/overlay' },
                       
+            ]
+        },
+        {
+            label: 'AI Assistant',
+            items: [
+                {label: 'Chat', icon: 'pi pi-fw pi-id-card', to: '/chat' },
+                {label: 'Diactation', icon: 'pi pi-fw pi-id-card', to: '/dictation' },
+                
             ]
         },
         // {
