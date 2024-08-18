@@ -3,7 +3,8 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { FiSend } from 'react-icons/fi';
-import { AiOutlinePaperClip, AiOutlineCopy } from 'react-icons/ai'; // Add copy icon
+import { AiOutlinePaperClip, AiOutlineCopy } from 'react-icons/ai';
+import { FaMicrophone } from 'react-icons/fa';
 import axios from 'axios';
 import "./chat.css";
 
@@ -12,10 +13,43 @@ const Chat = () => {
     const [userInput, setUserInput] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isRecording, setIsRecording] = useState(false);
+    const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+    const [selectedLanguage, setSelectedLanguage] = useState('en-US');
     const chatEndRef = useRef(null);
+    const recognitionRef = useRef(null);
 
-    // Set a higher timeout for Axios requests
-    axios.defaults.timeout = 10 * 60 * 1000; // 10 minutes
+    useEffect(() => {
+        // Check if the browser supports the Web Speech API
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            setIsSpeechSupported(true);
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognitionRef.current = new SpeechRecognition();
+            recognitionRef.current.continuous = true;  // Set continuous listening
+            recognitionRef.current.interimResults = false;  // Use only final results
+            recognitionRef.current.lang = selectedLanguage;
+
+            recognitionRef.current.onresult = (event) => {
+                const finalTranscript = Array.from(event.results)
+                    .map(result => result[0].transcript)
+                    .join('');
+                setUserInput(finalTranscript);
+            };
+
+            recognitionRef.current.onerror = (event) => {
+                console.error('Speech recognition error', event);
+            };
+        }
+    }, [selectedLanguage]);
+
+    const toggleRecording = () => {
+        if (isRecording) {
+            recognitionRef.current.stop();
+        } else {
+            recognitionRef.current.start();
+        }
+        setIsRecording(!isRecording);
+    };
 
     // Automatically scroll to the bottom when messages change
     useEffect(() => {
@@ -149,6 +183,7 @@ const Chat = () => {
                     onClick={uploadFile}
                     disabled={!selectedFile || loading} // Disable when no file selected or loading
                 />
+                
                 <InputTextarea
                     value={userInput}
                     onChange={handleInputChange}
@@ -159,6 +194,15 @@ const Chat = () => {
                     rows={1}
                     disabled={loading} // Disable when loading
                 />
+                {isSpeechSupported && (
+                    <Button
+                        icon={<FaMicrophone color={isRecording ? 'red' : 'black'} />}
+                        className="p-button"
+                        onClick={toggleRecording}
+                        tooltip={isRecording ? "Stop Recording" : "Start Recording"}
+                        tooltipOptions={{ position: 'top' }}
+                    />
+                )}
                 <Button
                     icon={<FiSend />}
                     className="send-button"
