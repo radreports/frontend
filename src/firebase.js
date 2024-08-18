@@ -4,7 +4,7 @@ import 'firebase/compat/auth';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBRETnvKbUf-27kWxQBBNz3NRDJH4EQQNs",
-  authDomain: "localhost:3000",
+  authDomain: "app.radassist.ai",
   projectId: "webapp-5f6fb",
   storageBucket: "webapp-5f6fb.appspot.com",
   messagingSenderId: "889954314933",

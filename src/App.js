@@ -309,11 +309,11 @@ const App = () => {
     if (!isSignedIn) {
         return (
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-    <div style={{ flex: 1, textAlign: 'right', paddingRight: '20px', maxWidth: '20%' }}>
-        <h1 style={{ color: 'white' }}>Welcome to RadAssist AI</h1>
+    <div style={{ flex: 1, textAlign: 'right', paddingRight: '1px', maxWidth: '33%' }}>
+        <h1 style={{ color: 'white'}}>Welcome to RadAssist AI</h1>
         <p style={{ color: 'white' }}>Please sign in to continue:</p>
     </div>
-    <div style={{ flex: 2, display: 'flex', justifyContent: 'center', maxWidth: '80%' }}>
+    <div style={{ flex: 2, display: 'flex', justifyContent: 'center', paddingRight: '390px', maxWidth: '67%' }}>
         <CustomAuth />
     </div>
 </div>

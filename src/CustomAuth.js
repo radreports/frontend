@@ -7,7 +7,7 @@ import { Message } from 'primereact/message';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import './CustomAuth.css';
-
+import './App.scss';
 const CustomAuth = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
