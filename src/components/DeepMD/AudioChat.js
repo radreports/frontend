@@ -160,7 +160,7 @@ const AudioChat = () => {
             const newMessages = [...messages, { role: 'user', content: userInput }];
             setMessages(newMessages);
             setUserInput('');
-            setLoading(true);
+            setLoading(true); // Show loading indicator
 
             try {
                 const response = await axios.post('https://chat.deepmd.io/chat', {
@@ -170,12 +170,14 @@ const AudioChat = () => {
                     top_p: 0.9,
                     max_gen_len: 512
                 });
-
+                console.log('RadAssistant response:', response.data.history);
+                response.data.history.shift();
+                // Update messages with the response from RadAssistant
                 setMessages(response.data.history.map(([role, content]) => ({ role, content })));
             } catch (error) {
                 console.error('Error sending message:', error);
             } finally {
-                setLoading(false);
+                setLoading(false); // Hide loading indicator
             }
         }
     };
@@ -227,6 +229,16 @@ const AudioChat = () => {
         });
     };
 
+    const formatMessageContent = (content) => {
+        const formattedContent = content.split(/(\*\*.*?\*\*)/g).map((part, index) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+                return <strong key={index}>{part.slice(2, -2)}</strong>;
+            }
+            return part;
+        });
+        return formattedContent;
+    };
+
     return (
         <div className="col-12 chat-container">
             {/* Displaying chat messages */}
@@ -243,6 +255,7 @@ const AudioChat = () => {
                                     />
                                 )}
                                 <strong>{msg.role === 'user' ? 'You' : 'RadAssistant'}:</strong> {msg.content}
+                                <pre className="formatted-response">{formatMessageContent(msg.content)}</pre>
                             </div>
                         </Card>
                     </div>

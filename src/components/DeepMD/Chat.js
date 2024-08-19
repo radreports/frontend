@@ -75,6 +75,7 @@ const Chat = () => {
                 });
                 console.log('RadAssistant response:', response.data);
                 // Update messages with the response from RadAssistant
+                response.data.history.shift();
                 setMessages(response.data.history.map(([role, content]) => ({ role, content })));
             } catch (error) {
                 console.error('Error sending message:', error);
