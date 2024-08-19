@@ -29,9 +29,19 @@ body, html {
 .message {
     margin-bottom: 10px;
 }
+.message-card {
+    background-color: #2e2e2e; /* Match the background of the chat container */
+    border: none; /* Remove the default border */
+    box-shadow: none; /* Remove any default shadow */
+    border-radius: 10px; /* Rounded corners */
+    padding: 10px; /* Padding inside the card */
+    margin: 5px 0; /* Margin between the cards */
+    width: 100%; /* Ensure the card takes full width */
+    color: white; /* Ensure the text color is white */
+}
 
 .message.user .message-content {
-    background-color: #007bff;
+    background-color: black;
     
 
     color: white;
@@ -120,4 +130,16 @@ body, html {
 
 .copy-icon:hover {
     color: #0056b3;
+}
+.formatted-response {
+    white-space: pre-wrap; /* Preserves whitespace and wraps lines */
+    /* font-family: 'Courier New', Courier, monospace;  */
+    /* Optional: use a monospaced font for code-like appearance */
+    /* background-color: #f4f4f4; */
+    background-color: rgb(65, 60, 60);
+     /* Optional: light gray background */
+    padding: 10px; /* Optional: add some padding */
+    border-radius: 5px; /* Optional: rounded corners */
+    margin-top: 5px;
+    display: block;
 }

@@ -73,7 +73,7 @@ const Chat = () => {
                     top_p: 0.9,
                     max_gen_len: 512
                 });
-
+                console.log('RadAssistant response:', response.data);
                 // Update messages with the response from RadAssistant
                 setMessages(response.data.history.map(([role, content]) => ({ role, content })));
             } catch (error) {
@@ -132,6 +132,16 @@ const Chat = () => {
         });
     };
 
+    const formatMessageContent = (content) => {
+        const formattedContent = content.split(/(\*\*.*?\*\*)/g).map((part, index) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+                return <strong key={index}>{part.slice(2, -2)}</strong>;
+            }
+            return part;
+        });
+        return formattedContent;
+    };
+
     return (
         <div className="col-12 chat-container">
             {/* Displaying chat messages */}
@@ -147,7 +157,8 @@ const Chat = () => {
                                         title="Copy to clipboard"
                                     />
                                 )}
-                                <strong>{msg.role === 'user' ? 'You' : 'RadAssistant'}:</strong> {msg.content}
+                                <strong>{msg.role === 'user' ? 'You' : 'RadAssistant'}:</strong>
+                                <pre className="formatted-response">{formatMessageContent(msg.content)}</pre>
                             </div>
                         </Card>
                     </div>

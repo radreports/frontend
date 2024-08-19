@@ -20,7 +20,7 @@ const AudioChat = () => {
     const silenceDetectionRef = useRef(null);
 
     const MIN_DECIBELS = -45;
-    const SILENCE_THRESHOLD_MS = 1000; // 1 second of silence
+    const SILENCE_THRESHOLD_MS = 2000; // 1 second of silence
 
     useEffect(() => {
         if (chatEndRef.current) {
