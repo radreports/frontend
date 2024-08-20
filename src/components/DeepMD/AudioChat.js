@@ -255,6 +255,7 @@ const AudioChat = () => {
                                     />
                                 )}
                                 <strong>{msg.role === 'user' ? 'You' : 'RadAssistant'}:</strong>
+                                {/* <strong>{RadAssistant:}</strong> */}
                                 <pre className="formatted-response">{formatMessageContent(msg.content)}</pre>
                             </div>
                         </Card>
