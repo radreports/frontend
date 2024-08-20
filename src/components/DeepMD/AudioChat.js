@@ -254,7 +254,7 @@ const AudioChat = () => {
                                         title="Copy to clipboard"
                                     />
                                 )}
-                                <strong>{msg.role === 'user' ? 'You' : 'RadAssistant'}:</strong> {msg.content}
+                                <strong>{msg.role === 'user' ? 'You' : 'RadAssistant'}:</strong>
                                 <pre className="formatted-response">{formatMessageContent(msg.content)}</pre>
                             </div>
                         </Card>
